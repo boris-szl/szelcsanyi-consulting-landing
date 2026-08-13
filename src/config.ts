@@ -57,6 +57,7 @@ export const config = {
 export const nav = [
   { label: 'Work', to: '/work' },
   { label: 'About', to: '/about' },
+  { label: 'Hiring', to: '/hiring' },
   { label: 'Writing', to: '/blog' },
   { label: 'Contact', to: '/contact' },
 ] as const

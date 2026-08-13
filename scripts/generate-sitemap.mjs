@@ -9,11 +9,15 @@ const BASE = 'https://szelcsanyi.net'
 const today = new Date().toISOString().slice(0, 10)
 
 // Static routes
-const staticPaths = ['/', '/work', '/about', '/blog', '/contact']
+const staticPaths = ['/', '/work', '/about', '/hiring', '/blog', '/contact']
 
 // Project detail routes — scan content.ts for `slug: '...'`
 const content = readFileSync(join(root, 'src/lib/content.ts'), 'utf8')
 const projectSlugs = [...content.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1])
+
+// Open-role detail routes — scan roles.ts for `slug: '...'`
+const rolesSrc = readFileSync(join(root, 'src/lib/roles.ts'), 'utf8')
+const roleSlugs = [...rolesSrc.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1])
 
 // Blog routes — one markdown file per post; pull the date for lastmod
 const blogDir = join(root, 'src/content/blog')
@@ -28,6 +32,7 @@ const posts = readdirSync(blogDir)
 const urls = [
   ...staticPaths.map((p) => ({ loc: p, lastmod: today })),
   ...projectSlugs.map((s) => ({ loc: `/work/${s}`, lastmod: today })),
+  ...roleSlugs.map((s) => ({ loc: `/hiring/${s}`, lastmod: today })),
   ...posts.map((p) => ({ loc: `/blog/${p.slug}`, lastmod: p.date })),
 ]
 

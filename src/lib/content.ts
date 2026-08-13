@@ -200,6 +200,39 @@ export const projects: Project[] = [
   },
 ]
 
+export interface Testimonial {
+  name: string
+  role: string
+  quote: string
+}
+
+export const testimonials: Testimonial[] = [
+  {
+    name: 'Patrick Schweizer',
+    role: 'Head of Product · nu.Education',
+    quote:
+      'One of the most reliable and dedicated engineers I’ve ever worked with. If something breaks at 2am, Boris is the one you can call — and you know it will get fixed. No drama, no excuses, just ownership and results. A true team player who naturally mentors others and raises the quality of the whole team.',
+  },
+  {
+    name: 'Angelos Zaimis',
+    role: 'Software Engineer · nu.Education',
+    quote:
+      'For more than three years he consistently stood out as both a highly skilled engineer and a strong technical leader. As Tech Lead, he was the person the team turned to when things needed immediate attention — composed under pressure, and fully accountable for resolving problems properly.',
+  },
+  {
+    name: 'Robert Mejlerö',
+    role: 'CTO · was Boris’s manager at CLEO AG',
+    quote:
+      'I’m pleased to recommend Boris for any DevOps role. He quickly developed a strong command of Kubernetes, cloud migration, and service orchestration — and applies DevOps principles and techniques effectively.',
+  },
+  {
+    name: 'Amin El Abida',
+    role: 'Senior Test Automation Engineer',
+    quote:
+      'A remarkable engineer whose agility and adeptness at mastering new technologies stand out strikingly. In a high-pressure environment, his capacity to remain unflappable and maintain focus is commendable — consistently delivering solutions that are innovative and efficient.',
+  },
+]
+
 export interface Stat {
   value: string
   label: string

@@ -5,8 +5,10 @@ import { Badge } from '@/components/ui/badge'
 import { StatusBadge } from '@/components/StatusBadge'
 import { SectionEyebrow } from '@/components/SectionEyebrow'
 import { Reveal } from '@/components/Reveal'
+import { Testimonials } from '@/components/Testimonials'
 import { CTABand } from '@/components/CTABand'
 import { services, projects, stats, stack } from '@/lib/content'
+import { roles } from '@/lib/roles'
 import { posts, formatDate } from '@/lib/blog'
 import { useSeo } from '@/lib/seo'
 import { site } from '@/lib/site'
@@ -266,6 +268,58 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* §05 — Hiring */}
+      <section className="border-t border-line bg-surface">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+          <Reveal>
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <SectionEyebrow ref="§05">Hiring</SectionEyebrow>
+                <h2 className="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+                  I also recruit senior tech talent — globally.
+                </h2>
+                <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted">
+                  Beyond building, I run searches for hard-to-find engineers and architects
+                  worldwide. Currently open:
+                </p>
+              </div>
+              <Link
+                to="/hiring"
+                className="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
+              >
+                All roles <ArrowUpRight className="size-4" />
+              </Link>
+            </div>
+          </Reveal>
+
+          <div className="mt-10 flex flex-col divide-y divide-line border-y border-line">
+            {roles.map((role, i) => (
+              <Reveal key={role.slug} delay={i * 60}>
+                <Link
+                  to={`/hiring/${role.slug}`}
+                  className="group flex items-center justify-between gap-6 py-6 transition-colors hover:bg-surface-2/40"
+                >
+                  <div className="flex items-baseline gap-4">
+                    <span className="mono-label text-accent">{role.ref}</span>
+                    <div>
+                      <span className="font-display text-lg font-semibold text-ink group-hover:text-accent">
+                        {role.title}
+                      </span>
+                      <span className="mono-label ml-0 block sm:ml-3 sm:inline">
+                        {role.location}
+                      </span>
+                    </div>
+                  </div>
+                  <ArrowUpRight className="size-5 shrink-0 text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+                </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Testimonials />
 
       <CTABand />
     </>

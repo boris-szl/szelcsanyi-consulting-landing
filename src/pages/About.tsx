@@ -130,6 +130,12 @@ export function About() {
                 read without me in the room. I like being the person a team can hand the hard
                 part to — and trust to hand it back working.
               </p>
+              <p>
+                I also <strong>recruit senior tech talent globally</strong> — engineers and
+                architects, including current searches for OT/ICS and IT-infrastructure
+                architects on critical-infrastructure programmes. If you’re hiring for something
+                hard to fill, or looking for your next role, that network is open to you.
+              </p>
             </div>
 
             <div className="mt-9">
