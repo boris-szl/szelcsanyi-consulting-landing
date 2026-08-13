@@ -15,7 +15,7 @@ export function Testimonials() {
   return (
     <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
       <Reveal>
-        <SectionEyebrow ref="§06">Endorsements</SectionEyebrow>
+        <SectionEyebrow mark="§06">Endorsements</SectionEyebrow>
         <h2 className="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
           What the people I’ve built with say.
         </h2>

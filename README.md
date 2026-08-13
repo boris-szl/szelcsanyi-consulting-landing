@@ -10,7 +10,6 @@ Node **20+** (the repo pins **24** in `.nvmrc`). This project uses **pnpm**.
 
 ```bash
 nvm use            # or: nvm install
-corepack enable    # provides pnpm
 ```
 
 ## Develop

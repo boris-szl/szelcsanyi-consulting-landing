@@ -181,7 +181,7 @@ export function About() {
       <section className="border-y border-line bg-surface">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
           <Reveal>
-            <SectionEyebrow ref="§ HOW">How I work</SectionEyebrow>
+            <SectionEyebrow mark="§ HOW">How I work</SectionEyebrow>
             <h2 className="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
               Four habits I don’t compromise on.
             </h2>
@@ -205,7 +205,7 @@ export function About() {
       {/* Timeline */}
       <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
         <Reveal>
-          <SectionEyebrow ref="§ PATH">Track record</SectionEyebrow>
+          <SectionEyebrow mark="§ PATH">Track record</SectionEyebrow>
           <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             Where I’ve been building.
           </h2>
@@ -230,7 +230,7 @@ export function About() {
         </div>
 
         <Reveal className="mt-14">
-          <SectionEyebrow ref="§ EDU">Education</SectionEyebrow>
+          <SectionEyebrow mark="§ EDU">Education</SectionEyebrow>
         </Reveal>
         <div className="mt-8 border-t border-line">
           {education.map((item, i) => (

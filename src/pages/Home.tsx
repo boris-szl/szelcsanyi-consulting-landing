@@ -113,7 +113,7 @@ export function Home() {
       {/* §01 — Services */}
       <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <Reveal>
-          <SectionEyebrow ref="§01">What I do</SectionEyebrow>
+          <SectionEyebrow mark="§01">What I do</SectionEyebrow>
           <h2 className="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
             From architecture to mobile — the ways I help teams ship.
           </h2>
@@ -141,7 +141,7 @@ export function Home() {
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <SectionEyebrow ref="§02">Selected work</SectionEyebrow>
+                <SectionEyebrow mark="§02">Selected work</SectionEyebrow>
                 <h2 className="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
                   Systems built to hold up under real traffic.
                 </h2>
@@ -187,7 +187,7 @@ export function Home() {
       <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-[1fr_1fr]">
           <Reveal>
-            <SectionEyebrow ref="§03">About</SectionEyebrow>
+            <SectionEyebrow mark="§03">About</SectionEyebrow>
             <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
               A senior engineer you can hand the hard part to.
             </h2>
@@ -227,7 +227,7 @@ export function Home() {
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <SectionEyebrow ref="§04">Writing</SectionEyebrow>
+                <SectionEyebrow mark="§04">Writing</SectionEyebrow>
                 <h2 className="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
                   Notes from the work.
                 </h2>
@@ -275,7 +275,7 @@ export function Home() {
           <Reveal>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <SectionEyebrow ref="§05">Hiring</SectionEyebrow>
+                <SectionEyebrow mark="§05">Hiring</SectionEyebrow>
                 <h2 className="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
                   I also recruit senior tech talent — globally.
                 </h2>
