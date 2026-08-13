@@ -1,0 +1,213 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/*
+  szelcsanyi consulting — dark "terminal datasheet" system, from the Figma brand.
+  Tokens sourced from the logo node: bg #121214, border #222b35, text #e2e8f0,
+  green accent #2be080. Display face: Outfit (Black). Mono: Geist Mono.
+*/
+
+@theme {
+  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --color-bg: #101215;
+  --color-surface: #16191d;
+  --color-surface-2: #1c2026;
+  --color-ink: #e2e8f0;
+  --color-muted: #8b95a5;
+  --color-line: #222b35;
+  --color-line-strong: #2c3744;
+  --color-accent: #2be080;
+  --color-accent-soft: #33ffa0;
+  --color-accent-ink: #08130c;
+
+  /* shadcn/ui token bridge — components inherit the identity above */
+  --color-background: var(--color-bg);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-ink);
+  --color-primary: var(--color-accent);
+  --color-primary-foreground: var(--color-accent-ink);
+  --color-secondary: var(--color-surface-2);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted-fg: var(--color-muted);
+  --color-border: var(--color-line);
+  --color-ring: var(--color-accent);
+
+  --radius-card: 12px;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* The lowercase two-tone wordmark from the Figma logo */
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  text-transform: lowercase;
+  line-height: 0.92;
+}
+
+/* Monospace metadata label used across the datasheet */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Signature: faint graph-paper grid behind the hero, lightened for dark */
+.blueprint-grid {
+  background-image:
+    linear-gradient(to right, rgba(226, 232, 240, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Soft green glow used sparingly behind the hero */
+.accent-glow {
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(43, 224, 128, 0.16) 0%,
+    transparent 100%
+  );
+}
+
+/* Scroll-reveal — opt-in, honours reduced motion via the block above */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Prose styling for blog posts, tuned to the dark datasheet system */
+.prose-datasheet {
+  color: var(--color-ink);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+.prose-datasheet > * + * {
+  margin-top: 1.25em;
+}
+.prose-datasheet p,
+.prose-datasheet li {
+  color: #c2cad6;
+}
+.prose-datasheet h2 {
+  font-size: 1.7rem;
+  margin-top: 2.2em;
+  margin-bottom: 0.2em;
+  color: var(--color-ink);
+}
+.prose-datasheet h3 {
+  font-size: 1.3rem;
+  margin-top: 1.8em;
+  margin-bottom: 0.2em;
+  color: var(--color-ink);
+}
+.prose-datasheet a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.prose-datasheet ul,
+.prose-datasheet ol {
+  padding-left: 1.3em;
+}
+.prose-datasheet ul { list-style: none; }
+.prose-datasheet ul > li { position: relative; }
+.prose-datasheet ul > li::before {
+  content: '—';
+  position: absolute;
+  left: -1.3em;
+  color: var(--color-accent);
+}
+.prose-datasheet ol { list-style: decimal; }
+.prose-datasheet li + li { margin-top: 0.4em; }
+.prose-datasheet blockquote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.1em;
+  color: var(--color-muted);
+}
+.prose-datasheet code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  color: var(--color-accent-soft);
+}
+.prose-datasheet pre {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  background: #0a0c0e;
+  border: 1px solid var(--color-line);
+  color: #d7deea;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius-card);
+  overflow-x: auto;
+}
+.prose-datasheet pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+.prose-datasheet strong { font-weight: 600; color: var(--color-ink); }

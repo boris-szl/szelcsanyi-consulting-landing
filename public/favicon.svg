@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#121214"/>
+  <rect x="0.5" y="0.5" width="31" height="31" rx="6.5" fill="none" stroke="#222b35"/>
+  <text x="16" y="15.5" font-family="Outfit, ui-sans-serif, sans-serif" font-size="12" font-weight="900" letter-spacing="-1" fill="#e2e8f0" text-anchor="middle">sz</text>
+  <text x="16" y="26" font-family="Outfit, ui-sans-serif, sans-serif" font-size="9" font-weight="900" letter-spacing="-0.5" fill="#2be080" text-anchor="middle">co</text>
+</svg>
