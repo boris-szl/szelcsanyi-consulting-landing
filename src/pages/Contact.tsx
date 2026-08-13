@@ -5,12 +5,18 @@ import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { StatusBadge } from '@/components/StatusBadge'
 import { site } from '@/lib/site'
+import { useSeo } from '@/lib/seo'
 import { formattedAddress } from '@/config'
 
 const inputClass =
   'w-full rounded-[var(--radius-card)] border border-line bg-surface px-4 py-3 text-sm text-ink placeholder:text-muted/70 focus:border-accent focus-visible:outline-none'
 
 export function Contact() {
+  useSeo({
+    title: 'Contact',
+    description:
+      'Start a project with Boris Szelcsányi — fractional CTO, backend, and React Native mobile. Based in Vienna & St. Gallen, working remote-first.',
+  })
   const [sent, setSent] = useState(false)
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {

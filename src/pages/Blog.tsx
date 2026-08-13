@@ -5,8 +5,14 @@ import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { CTABand } from '@/components/CTABand'
 import { posts, formatDate } from '@/lib/blog'
+import { useSeo } from '@/lib/seo'
 
 export function Blog() {
+  useSeo({
+    title: 'Writing',
+    description:
+      'Field notes on building dependable systems, React Native, reading slow queries, and consulting that leaves a team stronger.',
+  })
   return (
     <>
       <PageHeader

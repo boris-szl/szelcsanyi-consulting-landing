@@ -6,10 +6,15 @@ import { Reveal } from '@/components/Reveal'
 import { CTABand } from '@/components/CTABand'
 import { NotFound } from '@/pages/NotFound'
 import { projects } from '@/lib/content'
+import { useSeo } from '@/lib/seo'
 
 export function WorkDetail() {
   const { slug } = useParams()
   const index = projects.findIndex((p) => p.slug === slug)
+  useSeo({
+    title: index === -1 ? 'Not found' : `${projects[index].name} — ${projects[index].role}`,
+    description: index === -1 ? undefined : projects[index].summary,
+  })
   if (index === -1) return <NotFound />
   const project = projects[index]
   const next = projects[(index + 1) % projects.length]

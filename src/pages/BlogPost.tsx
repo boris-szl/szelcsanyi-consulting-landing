@@ -7,10 +7,15 @@ import { Reveal } from '@/components/Reveal'
 import { CTABand } from '@/components/CTABand'
 import { NotFound } from '@/pages/NotFound'
 import { posts, getPost, formatDate } from '@/lib/blog'
+import { useSeo } from '@/lib/seo'
 
 export function BlogPost() {
   const { slug } = useParams()
   const post = getPost(slug ?? '')
+  useSeo({
+    title: post ? post.title : 'Not found',
+    description: post?.excerpt,
+  })
   if (!post) return <NotFound />
 
   const index = posts.findIndex((p) => p.slug === post.slug)

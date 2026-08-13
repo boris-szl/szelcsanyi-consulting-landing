@@ -6,6 +6,7 @@ import { SectionEyebrow } from '@/components/SectionEyebrow'
 import { Reveal } from '@/components/Reveal'
 import { CTABand } from '@/components/CTABand'
 import { stack, stats } from '@/lib/content'
+import { useSeo } from '@/lib/seo'
 import { site } from '@/lib/site'
 
 const principles: [string, string][] = [
@@ -88,6 +89,11 @@ const education: { period: string; degree: string; org: string; note: string }[]
 ]
 
 export function About() {
+  useSeo({
+    title: 'About',
+    description:
+      'Boris Szelcsányi — freelance software engineer & fractional CTO in Vienna and St. Gallen. Founder-CTO of OnDuty and Nisura; web, backend, and React Native mobile.',
+  })
   return (
     <>
       <PageHeader

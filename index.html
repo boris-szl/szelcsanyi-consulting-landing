@@ -4,20 +4,101 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Szelcsányi Consulting — a freelance software engineer who designs, builds, and ships dependable backend systems for founders and engineering teams."
-    />
     <meta name="theme-color" content="#101215" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..900&family=Geist+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
+    <title>szelcsanyi consulting — Software engineering, shipped</title>
+    <meta
+      name="description"
+      content="Boris Szelcsányi — freelance software engineer and fractional CTO in Vienna & St. Gallen. I build web, backend, and React Native mobile apps for security-tech and marketplace products."
     />
+    <link rel="canonical" href="https://szelcsanyi.net/" />
+    <meta name="author" content="Boris Szelcsányi" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
 
-    <title>Szelcsányi Consulting — Software engineering, shipped</title>
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="szelcsanyi consulting" />
+    <meta property="og:title" content="szelcsanyi consulting — Software engineering, shipped" />
+    <meta
+      property="og:description"
+      content="Freelance software engineer & fractional CTO in Vienna & St. Gallen — web, backend, and React Native mobile for security-tech and marketplaces."
+    />
+    <meta property="og:url" content="https://szelcsanyi.net/" />
+    <meta property="og:image" content="https://szelcsanyi.net/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="szelcsanyi consulting — Software engineering, shipped" />
+    <meta
+      name="twitter:description"
+      content="Freelance software engineer & fractional CTO in Vienna & St. Gallen — web, backend, and React Native mobile."
+    />
+    <meta name="twitter:image" content="https://szelcsanyi.net/og.png" />
+
+    <!-- Structured data: Person + local business for geo/SEO -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://szelcsanyi.net/#person",
+            "name": "Boris Szelcsányi",
+            "jobTitle": "Freelance Software Engineer & Fractional CTO",
+            "url": "https://szelcsanyi.net/",
+            "image": "https://szelcsanyi.net/portrait.png",
+            "email": "mailto:boris@szelcsanyi.net",
+            "knowsAbout": [
+              "Software Architecture",
+              "Backend Engineering",
+              "React Native",
+              "Mobile App Development",
+              "Cyber Risk Quantification",
+              "DevOps"
+            ],
+            "sameAs": [
+              "https://github.com/boris-szl",
+              "https://www.linkedin.com/"
+            ]
+          },
+          {
+            "@type": "ProfessionalService",
+            "@id": "https://szelcsanyi.net/#business",
+            "name": "szelcsanyi consulting",
+            "founder": { "@id": "https://szelcsanyi.net/#person" },
+            "url": "https://szelcsanyi.net/",
+            "image": "https://szelcsanyi.net/og.png",
+            "email": "mailto:boris@szelcsanyi.net",
+            "priceRange": "$$$",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Sonnenbergstrasse 35",
+              "postalCode": "9000",
+              "addressLocality": "St. Gallen",
+              "addressCountry": "CH"
+            },
+            "areaServed": [
+              { "@type": "Country", "name": "Switzerland" },
+              { "@type": "Country", "name": "Austria" },
+              { "@type": "Country", "name": "Germany" },
+              { "@type": "AdministrativeArea", "name": "European Union" }
+            ],
+            "knowsLanguage": ["en", "de"],
+            "serviceType": [
+              "Fractional CTO",
+              "Software architecture",
+              "Backend engineering",
+              "React Native mobile app development",
+              "DevOps",
+              "Technical advisory"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

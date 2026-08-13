@@ -5,8 +5,14 @@ import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { CTABand } from '@/components/CTABand'
 import { projects } from '@/lib/content'
+import { useSeo } from '@/lib/seo'
 
 export function Work() {
+  useSeo({
+    title: 'Work',
+    description:
+      'Ventures I’ve founded, led, and advised across security-tech, marketplaces, and edtech — OnDuty, Nisura, BookSecurity, Yükbul, and more.',
+  })
   return (
     <>
       <PageHeader

@@ -8,6 +8,7 @@ import { Reveal } from '@/components/Reveal'
 import { CTABand } from '@/components/CTABand'
 import { services, projects, stats, stack } from '@/lib/content'
 import { posts, formatDate } from '@/lib/blog'
+import { useSeo } from '@/lib/seo'
 import { site } from '@/lib/site'
 
 const specRows: [string, string][] = [
@@ -19,6 +20,7 @@ const specRows: [string, string][] = [
 ]
 
 export function Home() {
+  useSeo({ title: 'szelcsanyi consulting — Software engineering, shipped' })
   const latest = posts.slice(0, 2)
   const featured = projects.slice(0, 3)
 
@@ -59,8 +61,9 @@ export function Home() {
             <Reveal delay={160}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
                 I’m a freelance engineer and fractional CTO. I’ve founded and led the
-                engineering behind security-tech and marketplace products across the EU, the
-                UAE, and Turkey — and I leave teams with systems they can run without me.
+                engineering — web, backend, and React Native mobile — behind security-tech and
+                marketplace products across the EU, the UAE, and Turkey, and I leave teams with
+                systems they can run without me.
               </p>
             </Reveal>
             <Reveal delay={240}>
@@ -110,7 +113,7 @@ export function Home() {
         <Reveal>
           <SectionEyebrow ref="§01">What I do</SectionEyebrow>
           <h2 className="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-            Four ways I make software teams faster and steadier.
+            From architecture to mobile — the ways I help teams ship.
           </h2>
         </Reveal>
         <div className="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line sm:grid-cols-2">
