@@ -24,7 +24,9 @@ const specRows: [string, string][] = [
 export function Home() {
   useSeo({ title: 'szelcsanyi consulting — Software engineering, shipped' })
   const latest = posts.slice(0, 2)
-  const featured = projects.slice(0, 3)
+  const featured = ['onduty', 'nisura', 'nu-education'].map(
+    (slug) => projects.find((p) => p.slug === slug)!,
+  )
 
   return (
     <>

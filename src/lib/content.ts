@@ -198,6 +198,26 @@ export const projects: Project[] = [
       'A clearer technical direction for a learning product that has to be both dependable at exam time and cheap to grow.',
     stack: ['Advisory', 'Architecture', 'Scaling', 'EdTech'],
   },
+  {
+    slug: 'nu-education',
+    ref: 'P-07',
+    name: 'nu. education',
+    url: 'https://nu.education/',
+    role: 'Software Engineering & Backend Lead',
+    period: '2022 — 2025',
+    status: 'Past',
+    domain: 'EdTech · vocational learning',
+    tagline: 'Next-generation vocational learning.',
+    summary:
+      'A next-generation vocational-learning platform in Zurich, where I grew from engineer to lead over 3.5 years and owned the backend and delivery.',
+    problem:
+      'A fast-growing learning product needed a backend and delivery pipeline that could scale reliably while the team kept shipping features.',
+    work:
+      'I led backend engineering and delivery: Spring Boot services on Kubernetes, CI/CD, observability, and the reliability practices that let the team ship continuously — and I mentored the engineers around me.',
+    outcome:
+      'A dependable backend and delivery pipeline that scaled with the product. I moved from Software Engineer to Backend Lead and then Software Engineering Lead.',
+    stack: ['Java', 'Spring Boot', 'Kubernetes', 'Docker', 'Postgres', 'AWS'],
+  },
 ]
 
 export interface Testimonial {
