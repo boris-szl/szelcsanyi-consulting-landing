@@ -1,6 +1,6 @@
 ---
 title: Six hours to mitigate a DoS — a connection-flood post-mortem
-date: 2026-05-16
+date: 2026-08-13
 excerpt: An unprotected origin server took a sustained flood on port 443 until its file descriptors ran out. Here is how we diagnosed it, stopped it in an afternoon, and why it was avoidable.
 tags: Security, Incident Response, DevOps
 readingTime: 8 min read
