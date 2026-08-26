@@ -1,86 +1,63 @@
-import { Suspense, lazy } from 'react'
-import { ArrowUpRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { useEffect } from 'react'
+import Cal, { getCalApi } from '@calcom/embed-react'
 import { site } from '@/lib/site'
 
 /*
-  Cal.com booker.
+  Cal.com inline booking embed.
 
-  <BookerEmbed /> talks to the Cal.com Platform API, so it only works inside a
-  <CalProvider> holding a Platform OAuth client id. That id is build-time config
-  (VITE_CAL_CLIENT_ID) — when it is missing we render a plain link to the public
-  cal.com page instead of an embed that would sit there spinning forever.
+  This is the iframe embed, not the Platform atoms: the booker is served from
+  app.cal.com inside an <iframe>, so our bundle only carries the loader (the
+  @calcom/embed-core types are erased at build time — the real embed.js is
+  fetched from cal.com on mount). The trade is that we can't style it with our
+  own CSS — Cal exposes a fixed set of --cal-* custom properties instead, which
+  we map onto the site tokens below so the embed reads as part of the page
+  rather than a bolted-on widget.
 
-  The atoms bundle is large (~300 KB of scoped CSS on top of the JS), so it is
-  code-split: nothing ships to visitors who never open /contact.
+  Note this pulls a script from app.cal.com; the CSP in security-headers.conf
+  allows that origin in script-src / frame-src.
 */
 
-const { username, eventSlug, view, clientId, apiUrl } = site.cal
+const { calLink, namespace, layout } = site.cal
 
-const publicCalUrl = `https://cal.com/${username}/${eventSlug}`
-
-const CalBooker = lazy(async () => {
-  const [{ CalProvider, BookerEmbed }] = await Promise.all([
-    import('@calcom/atoms'),
-    import('@calcom/atoms/globals.min.css'),
-  ])
-
-  return {
-    default: () => (
-      <CalProvider clientId={clientId} options={{ apiUrl }} isEmbed>
-        <BookerEmbed
-          username={username}
-          eventSlug={eventSlug}
-          view={view}
-          customClassNames={{
-            bookerContainer: 'border-line border rounded-[var(--radius-card)]',
-          }}
-          onCreateBookingSuccess={() => {
-            console.log('booking created successfully')
-          }}
-        />
-      </CalProvider>
-    ),
-  }
-})
-
-function BookerFallback({ note }: { note: string }) {
-  return (
-    <div className="rounded-[var(--radius-card)] border border-line bg-surface px-6 py-8">
-      <p className="text-sm leading-relaxed text-muted">{note}</p>
-      <div className="mt-6 flex flex-wrap gap-3">
-        <a href={publicCalUrl} target="_blank" rel="noreferrer">
-          <Button size="lg">
-            Open my calendar <ArrowUpRight className="size-4" />
-          </Button>
-        </a>
-        <a href={site.social.email}>
-          <Button variant="outline" size="lg">
-            {site.email}
-          </Button>
-        </a>
-      </div>
-    </div>
-  )
+/* Site tokens (src/index.css) mapped onto Cal's theming contract. */
+const calTheme = {
+  '--cal-bg': '#101215', // --color-bg
+  '--cal-bg-emphasis': '#1c2026', // --color-surface-2
+  '--cal-bg-subtle': '#16191d', // --color-surface
+  '--cal-bg-muted': '#16191d',
+  '--cal-border': '#222b35', // --color-line
+  '--cal-border-subtle': '#222b35',
+  '--cal-border-emphasis': '#2c3744', // --color-line-strong
+  '--cal-text': '#e2e8f0', // --color-ink
+  '--cal-text-emphasis': '#e2e8f0',
+  '--cal-text-subtle': '#8b95a5', // --color-muted
+  '--cal-text-muted': '#8b95a5',
+  '--cal-brand': '#2be080', // --color-accent
+  '--cal-brand-emphasis': '#33ffa0', // --color-accent-soft
+  '--cal-brand-text': '#08130c', // --color-accent-ink
 }
 
 export function BookingEmbed() {
-  if (!clientId) {
-    return (
-      <BookerFallback note="Pick a slot that suits you — the booking page opens in a new tab. Prefer email? That works just as well." />
-    )
-  }
+  useEffect(() => {
+    ;(async () => {
+      const cal = await getCalApi({ namespace })
+      cal('ui', {
+        theme: 'dark',
+        hideEventTypeDetails: false,
+        layout,
+        cssVarsPerTheme: { dark: calTheme, light: calTheme },
+      })
+    })()
+  }, [])
 
   return (
-    <Suspense
-      fallback={
-        <div
-          className="h-[560px] animate-pulse rounded-[var(--radius-card)] border border-line bg-surface"
-          aria-label="Loading calendar"
-        />
-      }
-    >
-      <CalBooker />
-    </Suspense>
+    <div className="overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface">
+      <Cal
+        namespace={namespace}
+        calLink={calLink}
+        style={{ width: '100%', height: '100%', overflow: 'scroll' }}
+        config={{ layout, useSlotsViewOnSmallScreen: 'true' }}
+      />
+    </div>
   )
 }

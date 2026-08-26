@@ -18,19 +18,14 @@ export const config = {
   availability: 'Available Q3 · 2 slots', // shown in the status badge
 
   /* --- Scheduling (Cal.com) ---------------------------------------------
-   *  The contact page renders Cal.com's <BookerEmbed /> instead of a form.
-   *  `username` / `eventSlug` are your public cal.com handle and event type
-   *  (cal.com/<username>/<eventSlug>). `clientId` comes from the Cal.com
-   *  Platform OAuth client and is read from VITE_CAL_CLIENT_ID at build time —
-   *  without it the booker cannot fetch availability and the page falls back
-   *  to the plain email CTA.
+   *  /contact renders Cal.com's inline embed instead of a form.
+   *  `calLink` is the public booking path — cal.com/<calLink>.
+   *  `namespace` scopes the embed instance (must match the <Cal namespace>).
    */
   cal: {
-    username: 'boris-szelcsanyi',
-    eventSlug: 'intro',
-    view: 'MONTH_VIEW', // 'MONTH_VIEW' | 'WEEK_VIEW' | 'COLUMN_VIEW'
-    clientId: import.meta.env.VITE_CAL_CLIENT_ID ?? '',
-    apiUrl: import.meta.env.VITE_CAL_API_URL ?? 'https://api.cal.com/v2',
+    calLink: 'boris-szelcsanyi-consulting/discovery-call',
+    namespace: 'discovery-call',
+    layout: 'month_view', // 'month_view' | 'week_view' | 'column_view'
   },
 
   /* --- Where you work ---------------------------------------------------- */
