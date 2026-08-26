@@ -15,6 +15,7 @@ export const site = {
   tagline: config.tagline,
   years: config.yearsExperience,
   timezone: config.timezone,
+  cal: config.cal,
   social: {
     github: config.social.github,
     linkedin: config.social.linkedin,

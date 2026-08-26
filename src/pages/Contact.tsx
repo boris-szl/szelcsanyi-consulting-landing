@@ -1,6 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { ArrowUpRight, Check } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { ArrowUpRight } from 'lucide-react'
+import { BookingEmbed } from '@/components/BookingEmbed'
 import { PageHeader } from '@/components/PageHeader'
 import { Reveal } from '@/components/Reveal'
 import { StatusBadge } from '@/components/StatusBadge'
@@ -8,103 +7,25 @@ import { site } from '@/lib/site'
 import { useSeo } from '@/lib/seo'
 import { formattedAddress } from '@/config'
 
-const inputClass =
-  'w-full rounded-[var(--radius-card)] border border-line bg-surface px-4 py-3 text-sm text-ink placeholder:text-muted/70 focus:border-accent focus-visible:outline-none'
-
 export function Contact() {
   useSeo({
     title: 'Contact',
     description:
       'Start a project with Boris Szelcsányi — fractional CTO, backend, and React Native mobile. Based in Vienna & St. Gallen, working remote-first.',
   })
-  const [sent, setSent] = useState(false)
-
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const form = e.currentTarget
-    const data = new FormData(form)
-    const name = String(data.get('name') ?? '')
-    const from = String(data.get('email') ?? '')
-    const scope = String(data.get('scope') ?? '')
-    const message = String(data.get('message') ?? '')
-    const subject = encodeURIComponent(`New project enquiry — ${name || 'website'}`)
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${from}\nEngagement: ${scope}\n\n${message}`,
-    )
-    window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`
-    setSent(true)
-  }
-
   return (
     <>
       <PageHeader
         eyebrowRef="§ CONTACT"
         eyebrow="Contact"
-        title="Tell me what you’re building."
-        intro="The more concrete, the better — what it is, where it hurts, and roughly when. I reply within a day with an honest read on whether I can help."
+        title="Book a call."
+        intro="Grab a slot that suits you — 30 minutes, no pitch. Come with what you’re building, where it hurts, and roughly when. You’ll leave with an honest read on whether I can help."
       />
 
       <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
           <Reveal>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <label className="flex flex-col gap-2">
-                  <span className="mono-label">Name</span>
-                  <input name="name" required className={inputClass} placeholder="Your name" />
-                </label>
-                <label className="flex flex-col gap-2">
-                  <span className="mono-label">Email</span>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    className={inputClass}
-                    placeholder="you@company.com"
-                  />
-                </label>
-              </div>
-
-              <label className="flex flex-col gap-2">
-                <span className="mono-label">Engagement type</span>
-                <select name="scope" className={inputClass} defaultValue="">
-                  <option value="" disabled>
-                    Select one…
-                  </option>
-                  <option>Fractional CTO</option>
-                  <option>Project / build</option>
-                  <option>Architecture review</option>
-                  <option>Technical advisory</option>
-                  <option>Something else</option>
-                </select>
-              </label>
-
-              <label className="flex flex-col gap-2">
-                <span className="mono-label">What you’re building</span>
-                <textarea
-                  name="message"
-                  required
-                  rows={6}
-                  className={inputClass}
-                  placeholder="A few sentences on the product, the problem, and the timeline."
-                />
-              </label>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <Button type="submit" size="lg">
-                  Send enquiry
-                </Button>
-                {sent && (
-                  <span className="inline-flex items-center gap-1.5 text-sm text-muted">
-                    <Check className="size-4 text-accent" /> Opening your email client…
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-muted">
-                This opens a pre-filled email — nothing is sent until you hit send. Prefer to
-                write directly? Use the address on the right.
-              </p>
-            </form>
+            <BookingEmbed />
           </Reveal>
 
           <Reveal delay={120}>

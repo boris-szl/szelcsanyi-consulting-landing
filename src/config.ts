@@ -17,6 +17,22 @@ export const config = {
   phone: '', // optional, e.g. '+41 79 000 00 00' — leave '' to hide
   availability: 'Available Q3 · 2 slots', // shown in the status badge
 
+  /* --- Scheduling (Cal.com) ---------------------------------------------
+   *  The contact page renders Cal.com's <BookerEmbed /> instead of a form.
+   *  `username` / `eventSlug` are your public cal.com handle and event type
+   *  (cal.com/<username>/<eventSlug>). `clientId` comes from the Cal.com
+   *  Platform OAuth client and is read from VITE_CAL_CLIENT_ID at build time —
+   *  without it the booker cannot fetch availability and the page falls back
+   *  to the plain email CTA.
+   */
+  cal: {
+    username: 'boris-szelcsanyi',
+    eventSlug: 'intro',
+    view: 'MONTH_VIEW', // 'MONTH_VIEW' | 'WEEK_VIEW' | 'COLUMN_VIEW'
+    clientId: import.meta.env.VITE_CAL_CLIENT_ID ?? '',
+    apiUrl: import.meta.env.VITE_CAL_API_URL ?? 'https://api.cal.com/v2',
+  },
+
   /* --- Where you work ---------------------------------------------------- */
   locations: ['Vienna, AT', 'St. Gallen, CH'],
   locationShort: 'Vienna & St. Gallen', // compact label used in copy
