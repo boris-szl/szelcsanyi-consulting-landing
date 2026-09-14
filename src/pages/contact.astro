@@ -1,0 +1,125 @@
+---
+import { ArrowUpRight } from '@lucide/astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import Reveal from '@/components/Reveal.astro'
+import StatusBadge from '@/components/StatusBadge.astro'
+import { BookingEmbed } from '@/components/BookingEmbed'
+import { site } from '@/lib/site'
+import { config, formattedAddress } from '@/config'
+import { abs, breadcrumbs, BUSINESS_ID, WEBSITE_ID } from '@/lib/meta'
+
+const description =
+  'Start a project with Boris Szelcsányi — fractional CTO, backend, and React Native mobile. Based in Vienna & St. Gallen, working remote-first.'
+
+const jsonLd = [
+  {
+    '@type': 'ContactPage',
+    '@id': `${abs('/contact')}#page`,
+    url: abs('/contact'),
+    name: 'Contact',
+    description,
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntity: { '@id': BUSINESS_ID },
+  },
+  {
+    '@type': 'ContactPoint',
+    '@id': `${abs('/contact')}#contactpoint`,
+    contactType: 'Sales and new engagements',
+    email: `mailto:${config.email}`,
+    availableLanguage: ['English', 'German'],
+    areaServed: ['CH', 'AT', 'DE', 'EU'],
+  },
+  breadcrumbs([{ name: 'Contact', path: '/contact' }]),
+]
+---
+
+<BaseLayout title="Contact" description={description} jsonLd={jsonLd}>
+  <PageHeader
+    eyebrowRef="§ CONTACT"
+    eyebrow="Contact"
+    title="Book a call."
+    intro="Grab a slot that suits you — 30 minutes, no pitch. Come with what you’re building, where it hurts, and roughly when. You’ll leave with an honest read on whether I can help."
+  />
+
+  <section class="mx-auto max-w-6xl px-5 py-16 sm:px-8">
+    <div class="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
+      <Reveal>
+        {/*
+          The booker is a third-party iframe with no useful server-rendered
+          form, so it is mounted client-side only. The details panel beside it
+          carries the real contact routes in static HTML.
+        */}
+        <BookingEmbed client:only="react">
+          <div
+            slot="fallback"
+            class="flex min-h-[28rem] flex-col items-start justify-center gap-3 rounded-[var(--radius-card)] border border-line bg-surface px-6 py-16 sm:px-10"
+          >
+            <span class="mono-label text-accent">Booking</span>
+            <p class="max-w-md leading-relaxed text-muted">
+              Loading the scheduler. If it does not appear, email{' '}
+              <a class="text-ink underline underline-offset-4" href={site.social.email}>
+                {site.email}
+              </a>{' '}
+              and we will find a slot.
+            </p>
+          </div>
+        </BookingEmbed>
+      </Reveal>
+
+      <Reveal delay={120}>
+        <div class="rounded-[var(--radius-card)] border border-line bg-surface">
+          <div class="border-b border-line px-6 py-4">
+            <StatusBadge />
+          </div>
+          <dl class="divide-y divide-line">
+            <div class="px-6 py-4">
+              <dt class="mono-label">Email</dt>
+              <dd class="mt-1">
+                <a
+                  href={site.social.email}
+                  class="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
+                >
+                  {site.email}
+                </a>
+              </dd>
+            </div>
+            <div class="px-6 py-4">
+              <dt class="mono-label">Based in</dt>
+              <dd class="mt-1 text-sm font-medium text-ink">
+                {site.location} · {site.timezone}
+              </dd>
+            </div>
+            <div class="px-6 py-4">
+              <dt class="mono-label">Registered office</dt>
+              <dd class="mt-1 text-sm font-medium text-ink">{formattedAddress}</dd>
+            </div>
+            <div class="px-6 py-4">
+              <dt class="mono-label">Working style</dt>
+              <dd class="mt-1 text-sm font-medium text-ink">Remote-first, across EU / UAE / TR</dd>
+            </div>
+            <div class="px-6 py-4">
+              <dt class="mono-label">Elsewhere</dt>
+              <dd class="mt-2 flex flex-col gap-2">
+                <a
+                  href={site.social.linkedin}
+                  rel="me noopener"
+                  class="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"
+                >
+                  LinkedIn <ArrowUpRight class="size-3.5" />
+                </a>
+                <a
+                  href={site.social.github}
+                  rel="me noopener"
+                  class="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"
+                >
+                  GitHub <ArrowUpRight class="size-3.5" />
+                </a>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,23 @@
+---
+// The lowercase, two-tone brand mark from the Figma logo:
+// "szelcsanyi" in slate, "consulting" in green.
+import { cn } from '@/lib/utils'
+
+interface Props {
+  class?: string
+  stacked?: boolean
+}
+
+const { class: className, stacked = false } = Astro.props
+---
+
+<span
+  class={cn(
+    'wordmark inline-flex text-ink',
+    stacked ? 'flex-col' : 'flex-row items-baseline gap-[0.28em]',
+    className,
+  )}
+>
+  <span>szelcsanyi</span>
+  <span class="text-accent">consulting</span>
+</span>

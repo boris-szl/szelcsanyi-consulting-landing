@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Button from '@/components/ui/Button.astro'
+import { config } from '@/config'
+---
+
+<BaseLayout
+  title="Page not found"
+  description={config.seo.description}
+  noindex
+>
+  <section
+    class="mx-auto flex min-h-[60vh] max-w-6xl flex-col items-start justify-center px-5 py-24 sm:px-8"
+  >
+    <span class="mono-label text-accent">HTTP 404</span>
+    <h1 class="mt-4 font-display text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
+      No route matched.
+    </h1>
+    <p class="mt-4 max-w-md leading-relaxed text-muted">
+      The page you were after doesn’t exist — or has been refactored away. Let’s get you back to
+      something that resolves.
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <Button href="/" size="lg">Back to home</Button>
+      <Button href="/blog" variant="outline" size="lg">Read the writing</Button>
+    </div>
+  </section>
+</BaseLayout>

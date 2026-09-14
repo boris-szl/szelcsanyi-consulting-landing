@@ -4,6 +4,36 @@ date: 2026-08-13
 excerpt: An unprotected origin server took a sustained flood on port 443 until its file descriptors ran out. Here is how we diagnosed it, stopped it in an afternoon, and why it was avoidable.
 tags: Security, Incident Response, DevOps
 readingTime: 8 min read
+firstHand: true
+sources:
+  - title: Understanding and Responding to Distributed Denial-of-Service Attacks
+    url: https://www.cisa.gov/resources-tools/resources/understanding-and-responding-distributed-denial-service-attacks
+    publisher: CISA, FBI and MS-ISAC
+    note: Joint guidance covering volumetric, protocol, and application-layer techniques.
+  - title: "nginx core module: worker_connections and worker_rlimit_nofile"
+    url: https://nginx.org/en/docs/ngx_core_module.html
+    publisher: nginx
+    note: The two directives whose defaults set the file-descriptor ceiling this attack exhausted.
+  - title: ngx_http_limit_conn_module
+    url: https://nginx.org/en/docs/http/ngx_http_limit_conn_module.html
+    publisher: nginx
+    note: Per-key connection limiting, the origin-side control that blunts a connection flood.
+  - title: Cloudflare IP ranges
+    url: https://www.cloudflare.com/ips/
+    publisher: Cloudflare
+    note: The published CIDR blocks the origin firewall was narrowed to.
+  - title: Under Attack mode
+    url: https://developers.cloudflare.com/fundamentals/reference/under-attack-mode/
+    publisher: Cloudflare
+    note: The managed-challenge interstitial described in step four of the mitigation.
+  - title: "CWE-400: Uncontrolled Resource Consumption"
+    url: https://cwe.mitre.org/data/definitions/400.html
+    publisher: MITRE
+    note: The weakness class this incident falls under.
+  - title: Denial of Service
+    url: https://owasp.org/www-community/attacks/Denial_of_Service
+    publisher: OWASP
+    note: Background on resource-exhaustion attack patterns.
 ---
 
 *This is a sanitised write-up of a real incident I handled. The client, IP addresses, hostnames, and other identifying details have been removed or generalised — it is shared purely for the technical lessons.*

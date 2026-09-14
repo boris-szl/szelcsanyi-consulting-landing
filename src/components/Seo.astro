@@ -1,0 +1,84 @@
+---
+/*
+  Every page's <head>. Emits the canonical URL, Open Graph / Twitter cards, and
+  one schema.org @graph combining the site-wide identity nodes with whatever
+  primary node the page passes in.
+*/
+import { config } from '@/config'
+import { abs, websiteNode, personNode, businessNode, type Node } from '@/lib/meta'
+
+interface Props {
+  title: string
+  description: string
+  /** Append the brand to the title. Off for the home page, which carries it. */
+  brandSuffix?: boolean
+  ogType?: 'website' | 'article' | 'profile'
+  image?: string
+  noindex?: boolean
+  /** Page-specific schema.org nodes, merged into the shared @graph. */
+  jsonLd?: Node[]
+  article?: { publishedTime: string; modifiedTime?: string; tags?: string[] }
+}
+
+const {
+  title,
+  description,
+  brandSuffix = true,
+  ogType = 'website',
+  image = '/og.png',
+  noindex = false,
+  jsonLd = [],
+  article,
+} = Astro.props
+
+const fullTitle = brandSuffix ? `${title} — ${config.brandFull}` : title
+/*
+  Astro.url carries the configured `site`, so this is already absolute. Strip
+  the trailing slash to match `trailingSlash: 'never'` — except on the root,
+  where the origin alone is not a valid URL path.
+*/
+const path = Astro.url.pathname
+const canonical =
+  path === '/' ? Astro.site!.href : new URL(path, Astro.site).href.replace(/\/$/, '')
+const ogImage = abs(image)
+
+const graph = noindex ? [] : [websiteNode(), personNode(), businessNode(), ...jsonLd]
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="author" content={config.owner} />
+<meta
+  name="robots"
+  content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'}
+/>
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={config.brandFull} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="en" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+{article?.publishedTime && <meta property="article:published_time" content={article.publishedTime} />}
+{article?.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime} />}
+{article?.tags?.map((tag) => <meta property="article:tag" content={tag} />)}
+
+{
+  graph.length > 0 && (
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })}
+    />
+  )
+}

@@ -4,6 +4,31 @@ date: 2026-06-15
 excerpt: A repeatable way to go from "the database is slow" to a specific, measured fix — without guessing or adding indexes at random.
 tags: Postgres, Performance
 readingTime: 7 min read
+sources:
+  - title: EXPLAIN
+    url: https://www.postgresql.org/docs/current/sql-explain.html
+    publisher: PostgreSQL documentation
+    note: Reference for the ANALYZE and BUFFERS options used throughout.
+  - title: Using EXPLAIN
+    url: https://www.postgresql.org/docs/current/using-explain.html
+    publisher: PostgreSQL documentation
+    note: How to read a plan, including the estimated-versus-actual row comparison.
+  - title: pg_stat_statements
+    url: https://www.postgresql.org/docs/current/pgstatstatements.html
+    publisher: PostgreSQL documentation
+    note: The extension used to find the statements that consume the most total time.
+  - title: Statistics Used by the Planner
+    url: https://www.postgresql.org/docs/current/planner-stats.html
+    publisher: PostgreSQL documentation
+    note: Why stale statistics produce bad row estimates and poor join orders.
+  - title: Multicolumn Indexes
+    url: https://www.postgresql.org/docs/current/indexes-multicolumn.html
+    publisher: PostgreSQL documentation
+    note: Column-order rules behind the composite index in step four.
+  - title: auto_explain
+    url: https://www.postgresql.org/docs/current/auto-explain.html
+    publisher: PostgreSQL documentation
+    note: Logs plans for slow statements automatically when reproducing by hand is impractical.
 ---
 
 "The database is slow" is not a bug report — it is a feeling. My job is to turn it into a number, then turn that number into a plan. Here is the loop I run, more or less unchanged, on every performance engagement.

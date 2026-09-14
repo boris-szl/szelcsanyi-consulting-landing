@@ -1,0 +1,20 @@
+---
+/*
+  Scroll-reveal wrapper. The markup ships in the HTML either way — the observer
+  in BaseLayout only toggles the transition class, so crawlers and no-JS
+  readers get the full content.
+*/
+import { cn } from '@/lib/utils'
+
+interface Props {
+  class?: string
+  delay?: number
+  as?: 'div' | 'section' | 'li' | 'article' | 'aside'
+}
+
+const { class: className, delay = 0, as: Tag = 'div' } = Astro.props
+---
+
+<Tag data-reveal class={cn('reveal', className)} style={`transition-delay:${delay}ms`}>
+  <slot />
+</Tag>

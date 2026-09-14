@@ -3,15 +3,17 @@ import Cal, { getCalApi } from '@calcom/embed-react'
 import { site } from '@/lib/site'
 
 /*
-  Cal.com inline booking embed.
+  Cal.com inline booking embed — the one React island on the site.
 
   This is the iframe embed, not the Platform atoms: the booker is served from
   app.cal.com inside an <iframe>, so our bundle only carries the loader (the
-  @calcom/embed-core types are erased at build time — the real embed.js is
-  fetched from cal.com on mount). The trade is that we can't style it with our
-  own CSS — Cal exposes a fixed set of --cal-* custom properties instead, which
-  we map onto the site tokens below so the embed reads as part of the page
-  rather than a bolted-on widget.
+  real embed.js is fetched from cal.com on mount). The trade is that we can't
+  style it with our own CSS — Cal exposes a fixed set of --cal-* custom
+  properties instead, which we map onto the site tokens below so the embed
+  reads as part of the page rather than a bolted-on widget.
+
+  Mounted with client:only="react" — it has no meaningful server-rendered form,
+  and /contact carries the real contact details in static HTML beside it.
 
   Note this pulls a script from app.cal.com; the CSP in security-headers.conf
   allows that origin in script-src / frame-src.

@@ -1,0 +1,31 @@
+---
+import { ArrowRight } from '@lucide/astro'
+import Button from '@/components/ui/Button.astro'
+import StatusBadge from '@/components/StatusBadge.astro'
+import Reveal from '@/components/Reveal.astro'
+import { site } from '@/lib/site'
+---
+
+<section class="relative overflow-hidden border-t border-line bg-surface">
+  <div class="accent-glow pointer-events-none absolute inset-x-0 bottom-[-40%] top-[10%]"></div>
+  <div class="relative mx-auto max-w-6xl px-5 py-20 sm:px-8">
+    <Reveal>
+      <StatusBadge />
+      <h2 class="mt-6 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+        Have a system that needs to hold up? Let’s talk about it.
+      </h2>
+      <p class="mt-4 max-w-xl leading-relaxed text-muted">
+        Tell me what you’re building and where it hurts. I’ll reply within a day with an
+        honest read on whether — and how — I can help.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <Button href="/contact" size="lg">
+          Book a call <ArrowRight class="size-4" />
+        </Button>
+        <Button href={site.social.email} variant="outline" size="lg">
+          {site.email}
+        </Button>
+      </div>
+    </Reveal>
+  </div>
+</section>

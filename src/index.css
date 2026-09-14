@@ -125,15 +125,27 @@
 }
 
 /* Scroll-reveal — opt-in, honours reduced motion via the block above */
-.reveal {
+/*
+  Scroll-reveal. Gated behind .js (set by an inline script in BaseLayout) so
+  that without JavaScript the content is simply visible rather than stuck at
+  opacity 0 — the observer that would reveal it never runs.
+*/
+.js .reveal {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.reveal.is-visible {
+.js .reveal.is-visible {
   opacity: 1;
   transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* Prose styling for blog posts, tuned to the dark datasheet system */
