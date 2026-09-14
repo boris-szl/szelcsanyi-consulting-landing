@@ -9,8 +9,10 @@ lerna-debug.log*
 
 node_modules
 dist
-dist-ssr
 *.local
+
+# Astro build cache and generated types
+.astro/
 
 # Editor directories and files
 .vscode/*

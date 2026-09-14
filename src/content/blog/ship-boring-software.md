@@ -4,6 +4,19 @@ date: 2026-07-28
 excerpt: The most reliable systems I have built were also the least clever. Here is why I reach for boring first, and when I break my own rule.
 tags: Architecture, Reliability
 readingTime: 6 min read
+sources:
+  - title: Choose Boring Technology
+    url: https://mcfunley.com/choose-boring-technology
+    publisher: Dan McKinley
+    note: The origin of the "innovation tokens" idea this post calls a novelty budget.
+  - title: Yagni
+    url: https://martinfowler.com/bliki/Yagni.html
+    publisher: Martin Fowler
+    note: The companion argument against building for imagined future needs.
+  - title: DORA — capabilities and the four key metrics
+    url: https://dora.dev/guides/dora-metrics-four-keys/
+    publisher: DORA (Google Cloud)
+    note: Evidence that delivery throughput and stability improve together, rather than trading off.
 ---
 
 Early in my career I mistook novelty for quality. A new datastore, an exotic queue, a framework three weeks old on Hacker News — each felt like progress. Most of them became the thing I was paged about at 3am.
@@ -24,7 +37,7 @@ None of that is glamorous. All of it compounds.
 
 ## When I break the rule
 
-Boring-by-default is not boring-always. I will spend novelty budget when three things line up:
+Boring-by-default is not boring-always. I will spend novelty budget — what Dan McKinley called [innovation tokens](https://mcfunley.com/choose-boring-technology), of which you get about three — when three things line up:
 
 1. The problem is genuinely core to the business, not incidental.
 2. The boring option has a concrete, measured ceiling I have already hit.

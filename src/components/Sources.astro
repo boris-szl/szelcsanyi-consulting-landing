@@ -1,0 +1,58 @@
+---
+/*
+  The reference list under a post.
+
+  It exists for two readers: a person checking a claim, and an answer engine
+  resolving where a claim came from. The same entries are emitted as
+  schema.org `citation` on the BlogPosting, so the visible list and the
+  structured data never drift apart.
+*/
+import { ExternalLink } from '@lucide/astro'
+import { sourceHost } from '@/lib/meta'
+
+interface Props {
+  sources: { title: string; url: string; publisher?: string; note?: string }[]
+}
+
+const { sources } = Astro.props
+---
+
+{
+  sources.length > 0 && (
+    <section class="mt-16 border-t border-line pt-10" aria-labelledby="sources-heading">
+      <h2 id="sources-heading" class="font-display text-xl font-semibold text-ink">
+        Sources
+      </h2>
+      <p class="mt-2 text-sm leading-relaxed text-muted">
+        Primary references for the claims above. Standards and advisories are linked to the
+        issuing body rather than to coverage of them.
+      </p>
+      <ol class="mt-6 flex flex-col gap-5">
+        {sources.map((source, i) => (
+          <li class="grid grid-cols-[2rem_1fr] gap-3 text-sm">
+            <span class="mono-label pt-0.5 text-accent">
+              [{String(i + 1).padStart(2, '0')}]
+            </span>
+            <div>
+              <a
+                href={source.url}
+                rel="noopener nofollow"
+                class="group inline-flex items-start gap-1.5 font-medium leading-snug text-ink hover:text-accent"
+              >
+                <span>{source.title}</span>
+                <ExternalLink class="mt-0.5 size-3.5 shrink-0 text-muted transition-colors group-hover:text-accent" />
+              </a>
+              <p class="mt-1 font-mono text-[0.7rem] uppercase tracking-wide text-muted">
+                {source.publisher ? `${source.publisher} · ` : ''}
+                {sourceHost(source.url)}
+              </p>
+              {source.note && (
+                <p class="mt-1.5 leading-relaxed text-muted">{source.note}</p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}

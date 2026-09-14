@@ -4,6 +4,7 @@ date: 2026-05-02
 excerpt: How I earn trust as an outside engineer — by shipping something small and real before I propose anything large.
 tags: Consulting, Process
 readingTime: 5 min read
+firstHand: true
 ---
 
 The fastest way to lose a client is to spend three weeks writing a strategy deck. The fastest way to keep one is to ship something they can feel by Friday. Here is how I structure the opening of a new engagement so momentum arrives early and stays.

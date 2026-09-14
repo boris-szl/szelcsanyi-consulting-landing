@@ -1,0 +1,398 @@
+---
+import { getCollection } from 'astro:content'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Boxes,
+  Compass,
+  Gauge,
+  Rocket,
+  Server,
+  Smartphone,
+} from '@lucide/astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Reveal from '@/components/Reveal.astro'
+import StatusBadge from '@/components/StatusBadge.astro'
+import SectionEyebrow from '@/components/SectionEyebrow.astro'
+import Testimonials from '@/components/Testimonials.astro'
+import CTABand from '@/components/CTABand.astro'
+import Button from '@/components/ui/Button.astro'
+import Badge from '@/components/ui/Badge.astro'
+import { services, projects, stats, stack, type IconName } from '@/lib/content'
+import { roles } from '@/lib/roles'
+import { site } from '@/lib/site'
+import { config } from '@/config'
+import { abs, formatDate, isoDate, BUSINESS_ID, WEBSITE_ID } from '@/lib/meta'
+
+/* Service icons are stored as names in the data layer; resolve them here. */
+const icons: Record<IconName, typeof Boxes> = {
+  Boxes,
+  Compass,
+  Gauge,
+  Rocket,
+  Server,
+  Smartphone,
+}
+
+const specRows: [string, string][] = [
+  ['role', 'Fractional CTO & engineer'],
+  ['focus', 'Security-tech · marketplaces'],
+  ['stack', 'TypeScript · Node · React · Postgres'],
+  ['engagement', 'Founder · fractional · advisory'],
+  ['timezone', `${site.timezone} · remote-first`],
+]
+
+const latest = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 2)
+
+const featured = ['onduty', 'nisura', 'nu-education'].map(
+  (slug) => projects.find((p) => p.slug === slug)!,
+)
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    '@id': `${abs('/')}#webpage`,
+    url: abs('/'),
+    name: config.seo.title,
+    description: config.seo.description,
+    isPartOf: { '@id': WEBSITE_ID },
+    about: { '@id': BUSINESS_ID },
+    inLanguage: 'en',
+  },
+  /* The service catalogue, so an answer engine can state what is on offer
+     rather than inferring it from prose. */
+  {
+    '@type': 'OfferCatalog',
+    '@id': `${abs('/')}#services`,
+    name: 'Engineering services',
+    provider: { '@id': BUSINESS_ID },
+    itemListElement: services.map((service, i) => ({
+      '@type': 'Offer',
+      position: i + 1,
+      itemOffered: {
+        '@type': 'Service',
+        name: service.title,
+        description: service.detail,
+        provider: { '@id': BUSINESS_ID },
+      },
+    })),
+  },
+]
+---
+
+<BaseLayout
+  title={config.seo.title}
+  description={config.seo.description}
+  brandSuffix={false}
+  jsonLd={jsonLd}
+>
+  {/* §00 — Hero */}
+  <section class="relative overflow-hidden border-b border-line">
+    <div
+      class="blueprint-grid pointer-events-none absolute inset-0 opacity-70 [mask-image:radial-gradient(120%_90%_at_20%_0%,black,transparent)]"
+    >
+    </div>
+    <div class="accent-glow pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px]"></div>
+    <div
+      class="relative mx-auto grid max-w-6xl gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.35fr_1fr] lg:py-28"
+    >
+      <div>
+        <Reveal delay={0}>
+          <StatusBadge />
+        </Reveal>
+        <Reveal delay={80}>
+          <h1
+            class="mt-6 font-display text-[2.6rem] font-semibold leading-[0.98] tracking-tight text-ink sm:text-6xl"
+          >
+            Software engineering, <span class="relative whitespace-nowrap text-accent"
+              >actually shipped<svg
+                class="absolute -bottom-1 left-0 w-full"
+                height="8"
+                viewBox="0 0 300 8"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M2 5.5C60 2.5 120 2 298 4.5"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"></path>
+              </svg></span
+            >.
+          </h1>
+        </Reveal>
+        <Reveal delay={160}>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted">
+            I’m a freelance engineer and fractional CTO. I’ve founded and led the engineering —
+            web, backend, and React Native mobile — behind security-tech and marketplace
+            products across the EU, the UAE, and Turkey, and I leave teams with systems they
+            can run without me.
+          </p>
+        </Reveal>
+        <Reveal delay={240}>
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <Button href="/contact" size="lg">
+              Start a project <ArrowRight class="size-4" />
+            </Button>
+            <Button href="/work" variant="outline" size="lg">See the work</Button>
+          </div>
+        </Reveal>
+      </div>
+
+      {/* Signature: the engagement datasheet */}
+      <Reveal delay={200} class="lg:pt-2">
+        <div
+          class="rounded-[var(--radius-card)] border border-line bg-surface shadow-[0_1px_0_rgba(20,23,28,0.04),0_18px_40px_-24px_rgba(20,23,28,0.25)]"
+        >
+          <div class="flex items-center justify-between border-b border-line px-5 py-3">
+            <span class="mono-label">datasheet · {site.brand}</span>
+            <span class="font-mono text-[0.7rem] text-accent">rev. 2026.3</span>
+          </div>
+          <dl class="divide-y divide-line">
+            {
+              specRows.map(([key, value]) => (
+                <div class="flex items-baseline justify-between gap-4 px-5 py-3.5">
+                  <dt class="mono-label shrink-0">{key}</dt>
+                  <dd class="text-right text-sm font-medium text-ink">{value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+          <div
+            class="flex items-center justify-between border-t border-line bg-surface-2/40 px-5 py-3"
+          >
+            <span class="mono-label">availability</span>
+            <span class="font-mono text-[0.7rem] font-medium text-ink">{site.availability}</span>
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+  {/* §01 — Services */}
+  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+    <Reveal>
+      <SectionEyebrow mark="§01">What I do</SectionEyebrow>
+      <h2
+        class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
+      >
+        From architecture to mobile — the ways I help teams ship.
+      </h2>
+    </Reveal>
+    <div
+      class="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line sm:grid-cols-2"
+    >
+      {
+        services.map((service, i) => {
+          const Icon = icons[service.icon]
+          return (
+            <Reveal delay={i * 60}>
+              <div class="group h-full bg-surface p-7 transition-colors hover:bg-surface-2/50">
+                <div class="flex items-center justify-between">
+                  <Icon class="size-6 text-accent" stroke-width={1.6} aria-hidden="true" />
+                  <span class="mono-label">{service.ref}</span>
+                </div>
+                <h3 class="mt-6 text-xl text-ink">{service.title}</h3>
+                <p class="mt-1 text-sm font-medium text-accent">{service.summary}</p>
+                <p class="mt-3 text-sm leading-relaxed text-muted">{service.detail}</p>
+              </div>
+            </Reveal>
+          )
+        })
+      }
+    </div>
+  </section>
+
+  {/* §02 — Selected work */}
+  <section class="border-y border-line bg-surface">
+    <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <Reveal>
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <SectionEyebrow mark="§02">Selected work</SectionEyebrow>
+            <h2
+              class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
+            >
+              Systems built to hold up under real traffic.
+            </h2>
+          </div>
+          <a
+            href="/work"
+            class="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
+          >
+            All work <ArrowUpRight class="size-4" />
+          </a>
+        </div>
+      </Reveal>
+
+      <div class="mt-12 flex flex-col divide-y divide-line border-y border-line">
+        {
+          featured.map((project, i) => (
+            <Reveal delay={i * 60}>
+              <a
+                href={`/work/${project.slug}`}
+                class="group grid gap-4 py-7 transition-colors hover:bg-surface-2/50 sm:grid-cols-[14rem_1fr_auto] sm:items-center sm:gap-8"
+              >
+                <div class="flex items-baseline gap-4 sm:flex-col sm:items-start sm:gap-1.5">
+                  <span class="mono-label text-accent">{project.ref}</span>
+                  <span class="font-display text-xl font-semibold text-ink">{project.name}</span>
+                  <span class="mono-label">{project.role}</span>
+                </div>
+                <p class="max-w-xl text-sm leading-relaxed text-muted">{project.summary}</p>
+                <div class="flex items-center justify-between gap-6 sm:justify-end">
+                  <span class="mono-label whitespace-nowrap">{project.domain}</span>
+                  <ArrowUpRight class="size-5 text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+                </div>
+              </a>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* §03 — About teaser */}
+  <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+    <div class="grid gap-12 lg:grid-cols-[1fr_1fr]">
+      <Reveal>
+        <SectionEyebrow mark="§03">About</SectionEyebrow>
+        <h2 class="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+          A senior engineer you can hand the hard part to.
+        </h2>
+        <p class="mt-5 max-w-lg leading-relaxed text-muted">
+          I’ve been the first engineer at seed-stage startups and the person brought in to
+          steady systems at scale. I care about the unglamorous things — clear boundaries,
+          honest observability, and code the next person can read.
+        </p>
+        <Button href="/about" variant="outline" class="mt-7">More about me</Button>
+        <div class="mt-9 flex flex-wrap gap-2">
+          {stack.map((tech) => <Badge>{tech}</Badge>)}
+        </div>
+      </Reveal>
+
+      <Reveal delay={120} class="lg:pt-16">
+        <dl
+          class="grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line"
+        >
+          {
+            stats.map((stat) => (
+              <div class="bg-surface p-6">
+                <dt class="font-display text-3xl font-semibold text-ink">{stat.value}</dt>
+                <dd class="mt-1 text-sm text-muted">{stat.label}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </Reveal>
+    </div>
+  </section>
+
+  {/* §04 — Writing */}
+  <section class="border-t border-line bg-surface">
+    <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <Reveal>
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <SectionEyebrow mark="§04">Writing</SectionEyebrow>
+            <h2 class="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+              Notes from the work.
+            </h2>
+          </div>
+          <a
+            href="/blog"
+            class="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
+          >
+            All writing <ArrowUpRight class="size-4" />
+          </a>
+        </div>
+      </Reveal>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {
+          latest.map((post, i) => (
+            <Reveal delay={i * 80}>
+              <a
+                href={`/blog/${post.id}`}
+                class="group flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-surface p-7 transition-colors hover:border-line-strong hover:bg-surface-2"
+              >
+                <div class="flex items-center gap-3">
+                  <time class="mono-label" datetime={isoDate(post.data.date)}>
+                    {formatDate(post.data.date)}
+                  </time>
+                  <span class="h-px w-6 bg-line" />
+                  <span class="mono-label">{post.data.readingTime}</span>
+                </div>
+                <h3 class="mt-4 text-xl leading-snug text-ink group-hover:text-accent">
+                  {post.data.title}
+                </h3>
+                <p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{post.data.excerpt}</p>
+                <span class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-ink">
+                  Read{' '}
+                  <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </a>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* §05 — Hiring */}
+  <section class="border-t border-line bg-surface">
+    <div class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <Reveal>
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <SectionEyebrow mark="§05">Hiring</SectionEyebrow>
+            <h2
+              class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
+            >
+              I also recruit senior tech talent — globally.
+            </h2>
+            <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
+              Beyond building, I run searches for hard-to-find engineers and architects
+              worldwide. Currently open:
+            </p>
+          </div>
+          <a
+            href="/hiring"
+            class="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
+          >
+            All roles <ArrowUpRight class="size-4" />
+          </a>
+        </div>
+      </Reveal>
+
+      <div class="mt-10 flex flex-col divide-y divide-line border-y border-line">
+        {
+          roles.map((role, i) => (
+            <Reveal delay={i * 60}>
+              <a
+                href={`/hiring/${role.slug}`}
+                class="group flex items-center justify-between gap-6 py-6 transition-colors hover:bg-surface-2/40"
+              >
+                <div class="flex items-baseline gap-4">
+                  <span class="mono-label text-accent">{role.ref}</span>
+                  <div>
+                    <span class="font-display text-lg font-semibold text-ink group-hover:text-accent">
+                      {role.title}
+                    </span>
+                    <span class="mono-label ml-0 block sm:ml-3 sm:inline">{role.location}</span>
+                  </div>
+                </div>
+                <ArrowUpRight class="size-5 shrink-0 text-muted transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
+              </a>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Testimonials />
+
+  <CTABand />
+</BaseLayout>

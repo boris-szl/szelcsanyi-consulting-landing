@@ -1,0 +1,154 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content'
+import { ArrowLeft, ArrowRight } from '@lucide/astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Reveal from '@/components/Reveal.astro'
+import CTABand from '@/components/CTABand.astro'
+import Sources from '@/components/Sources.astro'
+import Badge from '@/components/ui/Badge.astro'
+import { config } from '@/config'
+import {
+  abs,
+  breadcrumbs,
+  formatDate,
+  isoDate,
+  isoDuration,
+  PERSON_ID,
+  BUSINESS_ID,
+} from '@/lib/meta'
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+  )
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    // Wrap so the "next up" link never needs a second collection query.
+    props: { post, next: posts[(i + 1) % posts.length] },
+  }))
+}
+
+type Props = { post: CollectionEntry<'blog'>; next: CollectionEntry<'blog'> }
+
+const { post, next } = Astro.props
+const { Content } = await render(post)
+
+const url = abs(`/blog/${post.id}`)
+const published = isoDate(post.data.date)
+const modified = post.data.updated ? isoDate(post.data.updated) : published
+
+const jsonLd = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${url}#article`,
+    headline: post.data.title,
+    description: post.data.excerpt,
+    url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    datePublished: published,
+    dateModified: modified,
+    timeRequired: isoDuration(post.data.readingTime),
+    keywords: post.data.tags,
+    articleSection: post.data.tags[0],
+    inLanguage: 'en',
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': BUSINESS_ID },
+    image: abs('/og.png'),
+    isAccessibleForFree: true,
+    /*
+      `citation` is what lets an answer engine trace a claim in this post back
+      to the primary document rather than back to the post itself.
+    */
+    citation: post.data.sources.map((source) => ({
+      '@type': 'CreativeWork',
+      name: source.title,
+      url: source.url,
+      ...(source.publisher
+        ? { publisher: { '@type': 'Organization', name: source.publisher } }
+        : {}),
+    })),
+  },
+  breadcrumbs([
+    { name: 'Writing', path: '/blog' },
+    { name: post.data.title, path: `/blog/${post.id}` },
+  ]),
+]
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={post.data.excerpt}
+  ogType="article"
+  jsonLd={jsonLd}
+  article={{ publishedTime: published, modifiedTime: modified, tags: post.data.tags }}
+>
+  <article>
+    <header class="border-b border-line">
+      <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8 lg:py-20">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+        >
+          <ArrowLeft class="size-4" /> All writing
+        </a>
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <time class="mono-label text-accent" datetime={published}>
+            {formatDate(post.data.date)}
+          </time>
+          <span class="h-px w-6 bg-line"></span>
+          <span class="mono-label">{post.data.readingTime}</span>
+          {
+            post.data.updated && (
+              <>
+                <span class="h-px w-6 bg-line" />
+                <span class="mono-label">Updated {formatDate(post.data.updated)}</span>
+              </>
+            )
+          }
+        </div>
+        <h1 class="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl">
+          {post.data.title}
+        </h1>
+        <p class="mt-5 text-lg leading-relaxed text-muted">{post.data.excerpt}</p>
+
+        <p class="mt-6 text-sm text-muted">
+          By <a href="/about" class="font-medium text-ink hover:text-accent" rel="author">
+            {config.owner}</a
+          > — {config.role}{post.data.firstHand ? ' · first-hand account' : ''}
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-2">
+          {post.data.tags.map((tag) => <Badge>{tag}</Badge>)}
+        </div>
+      </div>
+    </header>
+
+    <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8">
+      <div class="prose-datasheet">
+        <Content />
+      </div>
+
+      <Sources sources={post.data.sources} />
+    </div>
+  </article>
+
+  <section class="border-t border-line bg-surface">
+    <div class="mx-auto max-w-3xl px-5 py-10 sm:px-8">
+      <Reveal>
+        <a href={`/blog/${next.id}`} class="group flex items-center justify-between gap-4">
+          <div>
+            <span class="mono-label">Next up</span>
+            <div class="mt-1 font-display text-xl font-semibold text-ink group-hover:text-accent">
+              {next.data.title}
+            </div>
+          </div>
+          <ArrowRight
+            class="size-6 shrink-0 text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent"
+          />
+        </a>
+      </Reveal>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>

@@ -1,0 +1,96 @@
+---
+import { Menu, X } from '@lucide/astro'
+import Button from '@/components/ui/Button.astro'
+import Wordmark from '@/components/Wordmark.astro'
+import { cn } from '@/lib/utils'
+import { nav, site } from '@/lib/site'
+
+// Astro serves /work, not /work/ — normalise before comparing.
+const path = Astro.url.pathname.replace(/\/$/, '') || '/'
+const isActive = (to: string) => path === to || path.startsWith(`${to}/`)
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-transparent bg-bg/80 backdrop-blur-md transition-colors"
+>
+  <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
+    <a href="/" aria-label={site.brandFull}>
+      <Wordmark class="text-xl" />
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Primary">
+      {
+        nav.map((item) => (
+          <a
+            href={item.to}
+            aria-current={isActive(item.to) ? 'page' : undefined}
+            class={cn(
+              'rounded-[var(--radius-card)] px-3 py-2 text-sm text-muted transition-colors hover:text-ink',
+              isActive(item.to) && 'text-ink',
+            )}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <Button href="/contact" size="sm" class="hidden md:inline-flex">Book a call</Button>
+      <button
+        type="button"
+        id="menu-toggle"
+        class="grid h-10 w-10 place-items-center rounded-[var(--radius-card)] text-ink md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Menu class="size-5" data-menu-open />
+        <X class="size-5 hidden" data-menu-close />
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-line bg-bg md:hidden">
+    <nav class="mx-auto flex max-w-6xl flex-col px-5 py-3 sm:px-8" aria-label="Mobile">
+      {
+        nav.map((item) => (
+          <a
+            href={item.to}
+            aria-current={isActive(item.to) ? 'page' : undefined}
+            class={cn(
+              'border-b border-line/70 py-3 text-base text-muted last:border-0',
+              isActive(item.to) && 'text-ink',
+            )}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <Button href="/contact" class="mt-4 w-full">Book a call</Button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  /* Mobile menu + the border that appears once the page scrolls. */
+  const header = document.getElementById('site-header')!
+  const toggle = document.getElementById('menu-toggle')!
+  const menu = document.getElementById('mobile-menu')!
+  const openIcon = toggle.querySelector('[data-menu-open]')!
+  const closeIcon = toggle.querySelector('[data-menu-close]')!
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true'
+    toggle.setAttribute('aria-expanded', String(!open))
+    toggle.setAttribute('aria-label', open ? 'Open menu' : 'Close menu')
+    menu.classList.toggle('hidden', open)
+    openIcon.classList.toggle('hidden', !open)
+    closeIcon.classList.toggle('hidden', open)
+  })
+
+  const onScroll = () => header.classList.toggle('border-line', window.scrollY > 8)
+  onScroll()
+  window.addEventListener('scroll', onScroll, { passive: true })
+</script>

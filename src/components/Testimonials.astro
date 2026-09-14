@@ -1,0 +1,48 @@
+---
+import { Quote } from '@lucide/astro'
+import SectionEyebrow from '@/components/SectionEyebrow.astro'
+import Reveal from '@/components/Reveal.astro'
+import { testimonials } from '@/lib/content'
+
+function initials(name: string) {
+  return name
+    .split(' ')
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('')
+}
+---
+
+<section class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+  <Reveal>
+    <SectionEyebrow mark="§06">Endorsements</SectionEyebrow>
+    <h2 class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      What the people I’ve built with say.
+    </h2>
+    <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
+      From colleagues and managers at nu.Education and CLEO AG — verbatim from LinkedIn.
+    </p>
+  </Reveal>
+
+  <div class="mt-12 gap-6 md:columns-2 [&>*]:mb-6 [&>*]:break-inside-avoid">
+    {
+      testimonials.map((t, i) => (
+        <Reveal delay={(i % 2) * 80}>
+          <figure class="rounded-[var(--radius-card)] border border-line bg-surface p-7">
+            <Quote class="size-6 text-accent" stroke-width={1.6} aria-hidden="true" />
+            <blockquote class="mt-4 leading-relaxed text-ink/90">{t.quote}</blockquote>
+            <figcaption class="mt-6 flex items-center gap-3 border-t border-line pt-5">
+              <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-surface-2 font-mono text-xs font-medium text-accent">
+                {initials(t.name)}
+              </span>
+              <span class="flex flex-col">
+                <span class="font-display font-semibold text-ink">{t.name}</span>
+                <span class="mono-label normal-case tracking-normal">{t.role}</span>
+              </span>
+            </figcaption>
+          </figure>
+        </Reveal>
+      ))
+    }
+  </div>
+</section>

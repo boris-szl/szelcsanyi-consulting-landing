@@ -1,12 +1,19 @@
-import type { LucideIcon } from 'lucide-react'
-import { Boxes, Compass, Gauge, Rocket, Server, Smartphone } from 'lucide-react'
+/* Icon names resolved against @lucide/astro at render time — keeping these as
+   strings means the data layer carries no framework dependency. */
+export type IconName =
+  | 'Boxes'
+  | 'Compass'
+  | 'Gauge'
+  | 'Rocket'
+  | 'Server'
+  | 'Smartphone'
 
 export interface Service {
   ref: string
   title: string
   summary: string
   detail: string
-  icon: LucideIcon
+  icon: IconName
 }
 
 export const services: Service[] = [
@@ -16,7 +23,7 @@ export const services: Service[] = [
     summary: 'Own the technical direction, not just the code.',
     detail:
       'From zero-to-one product architecture to team and hiring decisions. I set the technical direction for early-stage companies and stay accountable for shipping it — as a founder does, not a contractor passing through.',
-    icon: Boxes,
+    icon: 'Boxes',
   },
   {
     ref: 'S-02',
@@ -24,7 +31,7 @@ export const services: Service[] = [
     summary: 'Systems that stay correct under real load.',
     detail:
       'Domain modelling, APIs, real-time location and scheduling, and data pipelines built for the failure modes. TypeScript, Node, Postgres, and event-driven services — GDPR-aware and EU-hosted when it matters.',
-    icon: Server,
+    icon: 'Server',
   },
   {
     ref: 'S-03',
@@ -32,7 +39,7 @@ export const services: Service[] = [
     summary: 'One codebase, iOS and Android, shipped fast.',
     detail:
       'Cross-platform mobile apps with React Native and Expo — real-time location, offline-first data, push, and native integrations. It’s how OnDuty’s field app and BookSecurity’s marketplace both ship to both stores from a single team.',
-    icon: Smartphone,
+    icon: 'Smartphone',
   },
   {
     ref: 'S-04',
@@ -40,7 +47,7 @@ export const services: Service[] = [
     summary: 'Find the bottleneck, remove it, prove it.',
     detail:
       'Profiling, query tuning, caching, and observability you can defend. I instrument first, then cut latency and cost where the data — not the guesswork — says it matters.',
-    icon: Gauge,
+    icon: 'Gauge',
   },
   {
     ref: 'S-05',
@@ -48,7 +55,7 @@ export const services: Service[] = [
     summary: 'From laptop to production, repeatably.',
     detail:
       'CI/CD, infrastructure-as-code, containers, and release processes that let small teams ship daily without fear. Boring, documented, and hard to break.',
-    icon: Rocket,
+    icon: 'Rocket',
   },
   {
     ref: 'S-06',
@@ -56,7 +63,7 @@ export const services: Service[] = [
     summary: 'A second pair of senior eyes.',
     detail:
       'Architecture reviews, build-vs-buy calls, security and compliance posture, and roadmap sanity checks. Embedded part-time or by the engagement — direct, with the trade-offs on the table.',
-    icon: Compass,
+    icon: 'Compass',
   },
 ]
 

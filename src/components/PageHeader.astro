@@ -1,0 +1,25 @@
+---
+import SectionEyebrow from '@/components/SectionEyebrow.astro'
+import Reveal from '@/components/Reveal.astro'
+
+interface Props {
+  eyebrowRef: string
+  eyebrow: string
+  title: string
+  intro?: string
+}
+
+const { eyebrowRef, eyebrow, title, intro } = Astro.props
+---
+
+<section class="border-b border-line">
+  <div class="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-20">
+    <Reveal>
+      <SectionEyebrow mark={eyebrowRef}>{eyebrow}</SectionEyebrow>
+      <h1 class="mt-5 max-w-3xl font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+        {title}
+      </h1>
+      {intro && <p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">{intro}</p>}
+    </Reveal>
+  </div>
+</section>
