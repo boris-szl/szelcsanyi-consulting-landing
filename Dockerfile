@@ -5,8 +5,10 @@ FROM node:24-alpine AS build
 WORKDIR /app
 RUN corepack enable
 
-# Install deps first (cached unless the lockfile changes)
-COPY package.json pnpm-lock.yaml ./
+# Install deps first (cached unless these files change).
+# pnpm-workspace.yaml carries the build-script allowlist; without it pnpm 12
+# fails with ERR_PNPM_IGNORED_BUILDS instead of honouring the decision.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # Build
