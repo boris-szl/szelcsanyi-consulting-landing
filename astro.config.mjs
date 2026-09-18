@@ -104,5 +104,16 @@ export default defineConfig({
     },
   },
 
+  /*
+    Prism, not the default Shiki. Shiki emits inline `style` attributes on
+    every token, which two things dislike: the generated CSP (style-src would
+    need 'unsafe-inline' purely for code blocks), and this site's own styling
+    — inline styles outrank classes, so Shiki's GitHub-dark palette was
+    silently overriding the `.prose-datasheet pre` rules in index.css.
+
+    Prism emits classes instead, styled from the site tokens in index.css.
+  */
+  markdown: { syntaxHighlight: 'prism' },
+
   vite: { plugins: [tailwindcss()] },
 })

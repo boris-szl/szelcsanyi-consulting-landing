@@ -11,6 +11,14 @@ const blog = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
+    /** Post language. Drives <html lang>, og:locale, and schema inLanguage. */
+    lang: z.enum(['en', 'de']).default('en'),
+    /*
+      Shared id across translations of the same post. Posts sharing a key are
+      emitted as hreflang alternates of one another, which is what stops two
+      language versions of the same article competing in search.
+    */
+    translationKey: z.string().optional(),
     /** Set when a post is revised; drives `dateModified` in the JSON-LD. */
     updated: z.coerce.date().optional(),
     excerpt: z.string(),

@@ -23,14 +23,56 @@ export async function getStaticPaths() {
   )
   return posts.map((post, i) => ({
     params: { slug: post.id },
-    // Wrap so the "next up" link never needs a second collection query.
-    props: { post, next: posts[(i + 1) % posts.length] },
+    props: {
+      post,
+      /*
+        Wrap so the "next up" link never needs a second collection query, and
+        stay within the post's own language — a German reader should not be
+        handed an English article as the next step. Falls back to the plain
+        neighbour if this is the only post in its language.
+      */
+      next:
+        posts.find(
+          (candidate, j) => j !== i && candidate.data.lang === post.data.lang && j > i,
+        ) ??
+        posts.find((candidate) => candidate.data.lang === post.data.lang && candidate.id !== post.id) ??
+        posts[(i + 1) % posts.length],
+      translations: posts.filter(
+        (other) =>
+          other.id !== post.id &&
+          post.data.translationKey !== undefined &&
+          other.data.translationKey === post.data.translationKey,
+      ),
+    },
   }))
 }
 
-type Props = { post: CollectionEntry<'blog'>; next: CollectionEntry<'blog'> }
+type Props = {
+  post: CollectionEntry<'blog'>
+  next: CollectionEntry<'blog'>
+  translations: CollectionEntry<'blog'>[]
+}
 
-const { post, next } = Astro.props
+const { post, next, translations }: Props = Astro.props
+const lang = post.data.lang
+const alternates = translations.map((t) => ({
+  lang: t.data.lang,
+  path: `/blog/${t.id}`,
+}))
+
+/* UI strings — only the handful the post chrome needs. */
+const t = {
+  en: { all: 'All writing', by: 'By', updated: 'Updated', next: 'Next up', alsoIn: 'Also in' },
+  de: {
+    all: 'Alle Beiträge',
+    by: 'Von',
+    updated: 'Aktualisiert',
+    next: 'Als Nächstes',
+    alsoIn: 'Auch auf',
+  },
+}[lang]
+
+const LANGUAGE_NAME = { en: 'English', de: 'Deutsch' } as const
 const { Content } = await render(post)
 
 const url = abs(`/blog/${post.id}`)
@@ -50,7 +92,7 @@ const jsonLd = [
     timeRequired: isoDuration(post.data.readingTime),
     keywords: post.data.tags,
     articleSection: post.data.tags[0],
-    inLanguage: 'en',
+    inLanguage: lang,
     author: { '@id': PERSON_ID },
     publisher: { '@id': BUSINESS_ID },
     image: abs('/og.png'),
@@ -73,6 +115,15 @@ const jsonLd = [
     { name: post.data.title, path: `/blog/${post.id}` },
   ]),
 ]
+
+if (alternates.length > 0) {
+  // Let the graph state the translation relationship too, not just hreflang.
+  ;(jsonLd[0] as Record<string, unknown>).workTranslation = alternates.map((alt) => ({
+    '@type': 'BlogPosting',
+    '@id': `${abs(alt.path)}#article`,
+    inLanguage: alt.lang,
+  }))
+}
 ---
 
 <BaseLayout
@@ -81,6 +132,8 @@ const jsonLd = [
   ogType="article"
   jsonLd={jsonLd}
   article={{ publishedTime: published, modifiedTime: modified, tags: post.data.tags }}
+  lang={lang}
+  alternates={alternates}
 >
   <article>
     <header class="border-b border-line">
@@ -89,7 +142,7 @@ const jsonLd = [
           href="/blog"
           class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
         >
-          <ArrowLeft class="size-4" /> All writing
+          <ArrowLeft class="size-4" /> {t.all}
         </a>
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <time class="mono-label text-accent" datetime={published}>
@@ -101,7 +154,7 @@ const jsonLd = [
             post.data.updated && (
               <>
                 <span class="h-px w-6 bg-line" />
-                <span class="mono-label">Updated {formatDate(post.data.updated)}</span>
+                <span class="mono-label">{t.updated} {formatDate(post.data.updated)}</span>
               </>
             )
           }
@@ -112,7 +165,7 @@ const jsonLd = [
         <p class="mt-5 text-lg leading-relaxed text-muted">{post.data.excerpt}</p>
 
         <p class="mt-6 text-sm text-muted">
-          By <a href="/about" class="font-medium text-ink hover:text-accent" rel="author">
+          {t.by} <a href="/about" class="font-medium text-ink hover:text-accent" rel="author">
             {config.owner}</a
           > — {config.role}{post.data.firstHand ? ' · first-hand account' : ''}
         </p>
@@ -120,6 +173,24 @@ const jsonLd = [
         <div class="mt-6 flex flex-wrap gap-2">
           {post.data.tags.map((tag) => <Badge>{tag}</Badge>)}
         </div>
+
+        {
+          translations.length > 0 && (
+            <p class="mt-6 text-sm text-muted">
+              {t.alsoIn}{' '}
+              {translations.map((other) => (
+                <a
+                  href={`/blog/${other.id}`}
+                  hreflang={other.data.lang}
+                  lang={other.data.lang}
+                  class="font-medium text-ink underline underline-offset-4 hover:text-accent"
+                >
+                  {LANGUAGE_NAME[other.data.lang]}
+                </a>
+              ))}
+            </p>
+          )
+        }
       </div>
     </header>
 
@@ -128,7 +199,7 @@ const jsonLd = [
         <Content />
       </div>
 
-      <Sources sources={post.data.sources} />
+      <Sources sources={post.data.sources} lang={lang} />
     </div>
   </article>
 
@@ -137,7 +208,7 @@ const jsonLd = [
       <Reveal>
         <a href={`/blog/${next.id}`} class="group flex items-center justify-between gap-4">
           <div>
-            <span class="mono-label">Next up</span>
+            <span class="mono-label">{t.next}</span>
             <div class="mt-1 font-display text-xl font-semibold text-ink group-hover:text-accent">
               {next.data.title}
             </div>

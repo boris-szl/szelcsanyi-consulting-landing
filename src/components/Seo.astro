@@ -18,6 +18,9 @@ interface Props {
   /** Page-specific schema.org nodes, merged into the shared @graph. */
   jsonLd?: Node[]
   article?: { publishedTime: string; modifiedTime?: string; tags?: string[] }
+  lang?: 'en' | 'de'
+  /** Other language versions of this page, for hreflang. */
+  alternates?: { lang: 'en' | 'de'; path: string }[]
 }
 
 const {
@@ -29,6 +32,8 @@ const {
   noindex = false,
   jsonLd = [],
   article,
+  lang = 'en',
+  alternates = [],
 } = Astro.props
 
 const fullTitle = brandSuffix ? `${title} — ${config.brandFull}` : title
@@ -62,7 +67,27 @@ const graph = noindex ? [] : [websiteNode(), personNode(), businessNode(), ...js
 <meta property="og:image" content={ogImage} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:locale" content="en" />
+<meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en'} />
+
+{
+  /*
+    hreflang must be reciprocal and include the page itself, or Google ignores
+    the set. x-default points at the English version as the canonical entry.
+  */
+  alternates.length > 0 && (
+    <>
+      <link rel="alternate" hreflang={lang} href={canonical} />
+      {alternates.map((alt) => (
+        <link rel="alternate" hreflang={alt.lang} href={abs(alt.path)} />
+      ))}
+      <link
+        rel="alternate"
+        hreflang="x-default"
+        href={lang === 'en' ? canonical : abs(alternates.find((a) => a.lang === 'en')?.path ?? '/')}
+      />
+    </>
+  )
+}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={fullTitle} />

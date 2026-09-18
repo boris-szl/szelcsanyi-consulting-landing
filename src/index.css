@@ -223,3 +223,54 @@
   color: inherit;
 }
 .prose-datasheet strong { font-weight: 600; color: var(--color-ink); }
+
+/*
+  Prism token colours, drawn from the site palette rather than a stock theme,
+  so code blocks read as part of the datasheet system. Class-based: no inline
+  styles, which keeps the generated CSP free of a style-src exception.
+*/
+.prose-datasheet .token.comment,
+.prose-datasheet .token.prolog,
+.prose-datasheet .token.doctype,
+.prose-datasheet .token.cdata {
+  color: #5f6b7a;
+  font-style: italic;
+}
+.prose-datasheet .token.punctuation,
+.prose-datasheet .token.operator,
+.prose-datasheet .token.entity,
+.prose-datasheet .token.url {
+  color: #7d8899;
+}
+.prose-datasheet .token.keyword,
+.prose-datasheet .token.tag,
+.prose-datasheet .token.selector,
+.prose-datasheet .token.atrule,
+.prose-datasheet .token.rule,
+.prose-datasheet .token.important {
+  color: var(--color-accent);
+}
+.prose-datasheet .token.string,
+.prose-datasheet .token.char,
+.prose-datasheet .token.attr-value,
+.prose-datasheet .token.regex {
+  color: #8fd3ad;
+}
+.prose-datasheet .token.number,
+.prose-datasheet .token.boolean,
+.prose-datasheet .token.constant,
+.prose-datasheet .token.symbol {
+  color: #c9d3e0;
+}
+.prose-datasheet .token.function,
+.prose-datasheet .token.class-name,
+.prose-datasheet .token.attr-name,
+.prose-datasheet .token.property,
+.prose-datasheet .token.variable {
+  color: var(--color-ink);
+}
+.prose-datasheet .token.deleted { color: #ff7b72; }
+.prose-datasheet .token.inserted { color: var(--color-accent); }
+.prose-datasheet .token.bold { font-weight: 600; }
+.prose-datasheet .token.italic { font-style: italic; }
+

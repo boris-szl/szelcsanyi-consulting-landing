@@ -77,6 +77,10 @@ const jsonLd = [
                       {post.data.sources.length} sources
                     </Badge>
                   )}
+                  {/* The index is an English page; flag anything that is not. */}
+                  {post.data.lang !== 'en' && (
+                    <Badge variant="solid">{post.data.lang.toUpperCase()}</Badge>
+                  )}
                   <span class="ml-auto hidden items-center gap-1 text-sm font-medium text-ink sm:inline-flex">
                     Read
                     <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />

@@ -12,7 +12,7 @@ interface Props {
   as?: 'div' | 'section' | 'li' | 'article' | 'aside'
 }
 
-const { class: className, delay = 0, as: Tag = 'div' } = Astro.props
+const { class: className, delay = 0, as: Tag = 'div' }: Props = Astro.props
 ---
 
 <Tag data-reveal class={cn('reveal', className)} style={`transition-delay:${delay}ms`}>
