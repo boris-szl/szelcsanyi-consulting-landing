@@ -6,7 +6,7 @@ translationKey: wordpress-zero-day-post-mortem
 excerpt: Eine Website war zehn Tage lang über eine WordPress-Core-Zero-Day-Schwachstelle vollständig kompromittiert. Kein Verschulden der Betreiber, keine Erkennung durch die vorhandenen Systeme — und beweisen ließ sich das Einfallstor nur über zwei Datenbankzeilen, die der Angreifer nicht löschen konnte.
 tags: Security, Incident Response, WordPress, Forensik
 readingTime: 10 Min. Lesezeit
-draft: true
+draft: false
 firstHand: true
 sources:
   - title: "CVE-2026-63030 — WordPress REST-API-Batch-Route-Confusion mit Remote-Code-Execution"

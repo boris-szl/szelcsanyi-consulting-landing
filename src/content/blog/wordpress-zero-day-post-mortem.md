@@ -6,7 +6,7 @@ translationKey: wordpress-zero-day-post-mortem
 excerpt: A site was fully compromised for ten days through a WordPress Core zero-day. Nothing the operators did caused it, nothing they had running detected it, and the only reason we could prove the entry vector was two database rows the attacker could not delete.
 tags: Security, Incident Response, WordPress, Forensics
 readingTime: 10 min read
-draft: true
+draft: false
 firstHand: true
 sources:
   - title: "CVE-2026-63030 — WordPress REST API batch-route confusion leading to remote code execution"
