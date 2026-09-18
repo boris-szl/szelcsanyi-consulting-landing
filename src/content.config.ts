@@ -22,6 +22,14 @@ const blog = defineCollection({
     /** Set when a post is revised; drives `dateModified` in the JSON-LD. */
     updated: z.coerce.date().optional(),
     excerpt: z.string(),
+    /*
+      The <title> and meta description have hard length budgets that good
+      display copy does not. These override `title` and `excerpt` for search
+      results only — the H1 and the on-page intro keep the longer versions.
+      Bounds are enforced here so an over-long tag fails the build.
+    */
+    seoTitle: z.string().max(60).optional(),
+    seoDescription: z.string().min(120).max(160).optional(),
     tags: z
       .string()
       .transform((s) => s.split(',').map((t) => t.trim()).filter(Boolean)),

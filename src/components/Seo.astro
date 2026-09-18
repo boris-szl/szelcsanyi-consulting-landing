@@ -36,7 +36,14 @@ const {
   alternates = [],
 } = Astro.props
 
-const fullTitle = brandSuffix ? `${title} — ${config.brandFull}` : title
+/*
+  Google truncates titles around 60 characters. The brand suffix costs 24 of
+  them, so it is appended only when the result still fits — otherwise the
+  page's own words win, which are the ones worth showing.
+*/
+const TITLE_BUDGET = 60
+const withBrand = `${title} — ${config.brandFull}`
+const fullTitle = brandSuffix && withBrand.length <= TITLE_BUDGET ? withBrand : title
 /*
   Astro.url carries the configured `site`, so this is already absolute. Strip
   the trailing slash to match `trailingSlash: 'never'` — except on the root,

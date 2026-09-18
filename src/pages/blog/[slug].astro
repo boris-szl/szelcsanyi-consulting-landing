@@ -76,6 +76,8 @@ const LANGUAGE_NAME = { en: 'English', de: 'Deutsch' } as const
 const { Content } = await render(post)
 
 const url = abs(`/blog/${post.id}`)
+/* Generated per post by ./[slug]/og.png.ts */
+const ogImage = `/blog/${post.id}/og.png`
 const published = isoDate(post.data.date)
 const modified = post.data.updated ? isoDate(post.data.updated) : published
 
@@ -95,7 +97,7 @@ const jsonLd = [
     inLanguage: lang,
     author: { '@id': PERSON_ID },
     publisher: { '@id': BUSINESS_ID },
-    image: abs('/og.png'),
+    image: abs(ogImage),
     isAccessibleForFree: true,
     /*
       `citation` is what lets an answer engine trace a claim in this post back
@@ -127,9 +129,10 @@ if (alternates.length > 0) {
 ---
 
 <BaseLayout
-  title={post.data.title}
-  description={post.data.excerpt}
+  title={post.data.seoTitle ?? post.data.title}
+  description={post.data.seoDescription ?? post.data.excerpt}
   ogType="article"
+  image={ogImage}
   jsonLd={jsonLd}
   article={{ publishedTime: published, modifiedTime: modified, tags: post.data.tags }}
   lang={lang}

@@ -2,6 +2,8 @@
 title: Pricing cyber risk in euros, not traffic lights
 date: 2026-09-14
 excerpt: I spent this year building Nisura — a European cyber risk quantification engine. Here are the modelling decisions that mattered, including the one I argued about with myself for weeks.
+seoDescription: >-
+  Building a European cyber risk quantification engine: why CVSS ranks the wrong things, and why US insurance loss models do not convert into euros.
 tags: Security, Cyber Risk, NIS2, Product
 readingTime: 8 min read
 firstHand: true

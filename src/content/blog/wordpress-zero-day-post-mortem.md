@@ -4,6 +4,9 @@ date: 2026-09-17
 lang: en
 translationKey: wordpress-zero-day-post-mortem
 excerpt: A site was fully compromised for ten days through a WordPress Core zero-day. Nothing the operators did caused it, nothing they had running detected it, and the only reason we could prove the entry vector was two database rows the attacker could not delete.
+seoTitle: "WordPress Zero-Day Post-Mortem: Ten Days Undetected"
+seoDescription: >-
+  A WordPress Core zero-day gave an unauthenticated attacker admin in 93 seconds. Ten days undetected, found by a Google result, proven by two database rows.
 tags: Security, Incident Response, WordPress, Forensics
 readingTime: 10 min read
 draft: false

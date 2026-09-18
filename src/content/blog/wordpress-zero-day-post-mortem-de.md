@@ -4,6 +4,9 @@ date: 2026-09-17
 lang: de
 translationKey: wordpress-zero-day-post-mortem
 excerpt: Eine Website war zehn Tage lang über eine WordPress-Core-Zero-Day-Schwachstelle vollständig kompromittiert. Kein Verschulden der Betreiber, keine Erkennung durch die vorhandenen Systeme — und beweisen ließ sich das Einfallstor nur über zwei Datenbankzeilen, die der Angreifer nicht löschen konnte.
+seoTitle: "WordPress-Zero-Day: Post-Mortem nach zehn Tagen"
+seoDescription: >-
+  Ein WordPress-Core-Zero-Day gab einem Angreifer in 93 Sekunden Admin-Rechte. Zehn Tage unbemerkt, entdeckt über ein Google-Ergebnis, belegt durch zwei Zeilen.
 tags: Security, Incident Response, WordPress, Forensik
 readingTime: 10 Min. Lesezeit
 draft: false
