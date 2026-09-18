@@ -42,7 +42,13 @@ const specRows: [string, string][] = [
   ['timezone', `${site.timezone} · remote-first`],
 ]
 
-const latest = (await getCollection('blog', ({ data }) => !data.draft))
+/*
+  English only. A translated post shares its date with its original, so an
+  unfiltered "two most recent" showed the same article twice — once per
+  language — and pushed the genuinely second-newest post off the page.
+  This page is lang="en"; the translation is reachable from the post itself.
+*/
+const latest = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 2)
 

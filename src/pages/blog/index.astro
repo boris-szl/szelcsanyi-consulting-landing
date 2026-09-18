@@ -9,9 +9,34 @@ import Badge from '@/components/ui/Badge.astro'
 import { config } from '@/config'
 import { abs, breadcrumbs, formatDate, isoDate, PERSON_ID, BUSINESS_ID } from '@/lib/meta'
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+const all = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 )
+
+/*
+  One row per article, not per translation. Posts sharing a translationKey are
+  the same piece of writing, so list the English one (this page is lang="en")
+  and link the other language from that row. Without this the index showed the
+  same article twice, which also reads to a crawler as near-duplicate content.
+*/
+const translationsOf = (post: (typeof all)[number]) =>
+  post.data.translationKey
+    ? all.filter(
+        (other) => other.id !== post.id && other.data.translationKey === post.data.translationKey,
+      )
+    : []
+
+const seen = new Set<string>()
+const posts = all.filter((post) => {
+  const key = post.data.translationKey
+  if (!key) return true
+  // Prefer the English version as the canonical row for this article.
+  if (post.data.lang !== 'en' && all.some((o) => o.data.translationKey === key && o.data.lang === 'en'))
+    return false
+  if (seen.has(key)) return false
+  seen.add(key)
+  return true
+})
 
 const description =
   'Field notes on building dependable systems, React Native, reading slow queries, and consulting that leaves a team stronger.'
@@ -81,6 +106,11 @@ const jsonLd = [
                   {post.data.lang !== 'en' && (
                     <Badge variant="solid">{post.data.lang.toUpperCase()}</Badge>
                   )}
+                  {translationsOf(post).map((other) => (
+                    <Badge variant="solid">
+                      {other.data.lang === 'de' ? 'Auch auf Deutsch' : other.data.lang.toUpperCase()}
+                    </Badge>
+                  ))}
                   <span class="ml-auto hidden items-center gap-1 text-sm font-medium text-ink sm:inline-flex">
                     Read
                     <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />
