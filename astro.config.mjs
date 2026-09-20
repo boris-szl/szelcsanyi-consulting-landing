@@ -25,6 +25,28 @@ const POST_DATES = Object.fromEntries(
     .filter(([, date]) => date),
 )
 
+/*
+  Tag archives with a single post are emitted noindex (see src/lib/tags.ts).
+  Listing a noindex URL in the sitemap is a contradictory signal, so compute
+  which tags are thin and drop those from the sitemap here.
+*/
+const INDEXABLE_TAG_SLUGS = (() => {
+  const counts = new Map()
+  for (const file of readdirSync(BLOG_DIR).filter((f) => f.endsWith('.md'))) {
+    const raw = readFileSync(new URL(`./src/content/blog/${file}`, import.meta.url), 'utf8')
+    const front = /^---\n([\s\S]*?)\n---/.exec(raw)?.[1] ?? ''
+    if (/^draft:\s*true/m.test(front)) continue
+    // English posts only — German tags get no archive of their own.
+    const lang = /^lang:\s*(\w+)/m.exec(front)?.[1] ?? 'en'
+    if (lang !== 'en') continue
+    for (const tag of (/^tags:\s*(.*)$/m.exec(front)?.[1] ?? '').split(',')) {
+      const slug = tag.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      if (slug) counts.set(slug, (counts.get(slug) ?? 0) + 1)
+    }
+  }
+  return new Set([...counts.entries()].filter(([, n]) => n >= 2).map(([slug]) => slug))
+})()
+
 export default defineConfig({
   // Absolute URLs for canonicals, Open Graph, the sitemap, and the RSS feed
   // all derive from this.
@@ -49,6 +71,10 @@ export default defineConfig({
     react(),
     sitemap({
       changefreq: 'monthly',
+      filter: (page) => {
+        const slug = /\/blog\/tag\/([^/]+)\/?$/.exec(page)?.[1]
+        return slug ? INDEXABLE_TAG_SLUGS.has(slug) : true
+      },
       serialize(item) {
         const path = new URL(item.url).pathname.replace(/\/$/, '')
 

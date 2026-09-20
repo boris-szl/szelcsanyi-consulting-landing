@@ -11,6 +11,17 @@ tags: Security, Incident Response, WordPress, Forensik
 readingTime: 10 Min. Lesezeit
 draft: false
 firstHand: true
+keyPoints:
+  - >-
+      Eine WordPress-Core-Zero-Day-Kette (CVE-2026-63030 mit CVE-2026-60137) führte in 93 Sekunden von einer unauthentifizierten HTTP-Anfrage zur funktionierenden Kommando-Shell.
+  - >-
+      Der Patch war seit 46 Tagen öffentlich. Automatische Core-Updates waren auf allen Sites deaktiviert, ohne dass es jemandem auffiel.
+  - >-
+      Die Kompromittierung blieb 10,3 Tage unentdeckt und wurde über ein Google-Suchergebnis mit eingeschleustem Casino-Spam gefunden, nicht durch Monitoring.
+  - >-
+      Vier von fünf Sites teilten einen Systembenutzer, sodass eine kompromittierte Site die Datenbank-Zugangsdaten aller vier offenlegte. Die fünfte blieb unberührt.
+  - >-
+      Die Log-Aufbewahrung lag bei rund 10 Tagen — kürzer als die Verweildauer. Nur ein Backup vor der Bereinigung bewahrte die Logs von Tag null.
 sources:
   - title: "CVE-2026-63030 — WordPress REST-API-Batch-Route-Confusion mit Remote-Code-Execution"
     url: https://www.cve.org/CVERecord?id=CVE-2026-63030

@@ -7,6 +7,17 @@ seoDescription: >-
 tags: Security, Cyber Risk, NIS2, Product
 readingTime: 8 min read
 firstHand: true
+keyPoints:
+  - >-
+      Ranking vulnerabilities by CVSS severity sorts by theoretical worst case; ranking on exploitation evidence (CISA KEV, EPSS, SSVC) inverts much of that order.
+  - >-
+      US insurance claims models do not convert to euros: they are bounded by policy limits and built on US labour costs and margins.
+  - >-
+      Controls such as MFA reduce the probability of a breach; resilience such as tested backups reduces the cost when one happens. Collapsing both into one score destroys the distinction.
+  - >-
+      The output is a loss-exceedance curve rather than a single figure, because a point estimate invites exactly the false precision that heatmaps are criticised for.
+  - >-
+      NIS2 Article 21 requires ongoing risk management, and Article 34 caps fines for essential entities at EUR 10 million or 2% of worldwide turnover.
 sources:
   - title: Known Exploited Vulnerabilities (KEV) Catalog
     url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog

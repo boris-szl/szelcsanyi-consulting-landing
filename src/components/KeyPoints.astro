@@ -1,0 +1,35 @@
+---
+/*
+  The answer-first block. Sits above the article body so both a scanning
+  reader and a retrieval system meet the load-bearing facts before the
+  narrative starts.
+*/
+interface Props {
+  points: string[]
+  lang?: 'en' | 'de'
+}
+
+const { points, lang = 'en' } = Astro.props
+const heading = lang === 'de' ? 'Kurz gefasst' : 'In short'
+---
+
+{
+  points.length > 0 && (
+    <aside
+      class="mb-12 rounded-[var(--radius-card)] border border-line bg-surface p-6 sm:p-7"
+      aria-labelledby="key-points-heading"
+    >
+      <h2 id="key-points-heading" class="mono-label text-accent">
+        {heading}
+      </h2>
+      <ul class="mt-4 flex flex-col gap-3">
+        {points.map((point) => (
+          <li class="flex gap-3 text-[0.95rem] leading-relaxed text-ink/90">
+            <span class="mt-2.5 h-px w-3 shrink-0 bg-accent" aria-hidden="true" />
+            <span>{point}</span>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )
+}

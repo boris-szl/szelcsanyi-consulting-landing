@@ -1,0 +1,137 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content'
+import { ArrowLeft, ArrowRight } from '@lucide/astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Reveal from '@/components/Reveal.astro'
+import CTABand from '@/components/CTABand.astro'
+import Badge from '@/components/ui/Badge.astro'
+import SectionEyebrow from '@/components/SectionEyebrow.astro'
+import { abs, breadcrumbs, formatDate, isoDate, WEBSITE_ID } from '@/lib/meta'
+import { collectTags, tagSlug, TAG_INDEX_THRESHOLD } from '@/lib/tags'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft)
+  const byTag = collectTags(posts)
+  return [...byTag.entries()].map(([tag, tagged]) => ({
+    params: { tag: tagSlug(tag) },
+    props: { tag, posts: tagged },
+  }))
+}
+
+type Props = { tag: string; posts: CollectionEntry<'blog'>[] }
+
+const { tag, posts }: Props = Astro.props
+
+/*
+  A single-post archive is a thin duplicate of the post it links to, so it is
+  kept out of the index. It still exists, and still passes its links on.
+*/
+const thin = posts.length < TAG_INDEX_THRESHOLD
+
+const count = `${posts.length} post${posts.length === 1 ? '' : 's'}`
+const title = `${tag} — writing`
+
+/*
+  The description has to land inside 120-160 for every tag, and tag names vary
+  from "NIS2" to "Incident Response". Pick the longest suffix that still fits
+  rather than hard-coding one sentence that overruns for the long names.
+*/
+const lead = `${count} tagged ${tag} by Boris Szelcsányi — freelance software engineer and fractional CTO.`
+const description =
+  [
+    ' Field notes on building and running systems that hold up in production.',
+    ' Field notes from building and running real systems.',
+    ' Field notes from the work.',
+  ]
+    .map((tail) => lead + tail)
+    .find((candidate) => candidate.length <= 160) ?? lead
+
+const jsonLd = thin
+  ? []
+  : [
+      {
+        '@type': 'CollectionPage',
+        '@id': `${abs(`/blog/tag/${tagSlug(tag)}`)}#page`,
+        url: abs(`/blog/tag/${tagSlug(tag)}`),
+        name: `${tag} — writing`,
+        description,
+        isPartOf: { '@id': WEBSITE_ID },
+        inLanguage: 'en',
+        mainEntity: {
+          '@type': 'ItemList',
+          itemListElement: posts.map((post, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            url: abs(`/blog/${post.id}`),
+            name: post.data.title,
+          })),
+        },
+      },
+      breadcrumbs([
+        { name: 'Writing', path: '/blog' },
+        { name: tag, path: `/blog/tag/${tagSlug(tag)}` },
+      ]),
+    ]
+---
+
+<BaseLayout title={title} description={description} noindex={thin} jsonLd={jsonLd}>
+  <section class="border-b border-line">
+    <div class="mx-auto max-w-4xl px-5 py-16 sm:px-8 lg:py-20">
+      <Reveal>
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+        >
+          <ArrowLeft class="size-4" /> All writing
+        </a>
+        <div class="mt-8">
+          <SectionEyebrow mark="§ TAG">{count}</SectionEyebrow>
+        </div>
+        <h1
+          class="mt-5 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl"
+        >
+          {tag}
+        </h1>
+      </Reveal>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-4xl px-5 py-14 sm:px-8">
+    <div class="border-t border-line">
+      {
+        posts.map((post, i) => (
+          <Reveal delay={i * 60}>
+            <a
+              href={`/blog/${post.id}`}
+              class="group grid gap-3 border-b border-line py-8 transition-colors hover:bg-surface sm:grid-cols-[9rem_1fr] sm:gap-8"
+            >
+              <div class="flex flex-col gap-1">
+                <time class="mono-label" datetime={isoDate(post.data.date)}>
+                  {formatDate(post.data.date)}
+                </time>
+                <span class="mono-label">{post.data.readingTime}</span>
+              </div>
+              <div>
+                <h2 class="font-display text-2xl font-semibold leading-snug text-ink group-hover:text-accent">
+                  {post.data.title}
+                </h2>
+                <p class="mt-3 max-w-2xl leading-relaxed text-muted">{post.data.excerpt}</p>
+                <div class="mt-5 flex flex-wrap items-center gap-2">
+                  {post.data.tags.map((other) => (
+                    <Badge variant={other === tag ? 'accent' : 'default'}>{other}</Badge>
+                  ))}
+                  <span class="ml-auto hidden items-center gap-1 text-sm font-medium text-ink sm:inline-flex">
+                    Read
+                    <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </div>
+              </div>
+            </a>
+          </Reveal>
+        ))
+      }
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>

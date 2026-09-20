@@ -37,6 +37,13 @@ const blog = defineCollection({
     /** Whether the post is a first-hand account — surfaced in the byline. */
     firstHand: z.boolean().default(false),
     /*
+      An answer-first summary, rendered above the body. Each entry should be a
+      self-contained factual claim, ideally carrying a number — that is the
+      form an answer engine can lift cleanly, and a narrative opening cannot
+      give it. Bounded so the block stays scannable.
+    */
+    keyPoints: z.array(z.string().min(40).max(220)).max(6).default([]),
+    /*
       Primary references the post leans on. Rendered as a Sources list and
       emitted as schema.org `citation`, so an answer engine can trace a claim
       back to the document it came from.

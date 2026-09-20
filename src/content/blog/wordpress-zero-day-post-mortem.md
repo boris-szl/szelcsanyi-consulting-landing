@@ -11,6 +11,17 @@ tags: Security, Incident Response, WordPress, Forensics
 readingTime: 10 min read
 draft: false
 firstHand: true
+keyPoints:
+  - >-
+      A WordPress Core zero-day chain (CVE-2026-63030 with CVE-2026-60137) took an unauthenticated HTTP request to a working command shell in 93 seconds.
+  - >-
+      The patch had been public for 46 days. Automatic core updates were disabled across all sites and nobody noticed.
+  - >-
+      The compromise ran undetected for 10.3 days and was found through a Google search result showing injected casino spam, not by any monitoring.
+  - >-
+      Four of five sites shared one system user, so a single site's compromise exposed the database credentials of all four. The fifth, on its own user, was untouched.
+  - >-
+      Log retention was about 10 days — shorter than the dwell time. Only a pre-remediation backup preserved the day-zero logs that proved the entry vector.
 sources:
   - title: "CVE-2026-63030 — WordPress REST API batch-route confusion leading to remote code execution"
     url: https://www.cve.org/CVERecord?id=CVE-2026-63030

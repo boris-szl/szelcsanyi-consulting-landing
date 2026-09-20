@@ -7,6 +7,17 @@ seoDescription: >-
 tags: Security, Incident Response, DevOps
 readingTime: 8 min read
 firstHand: true
+keyPoints:
+  - >-
+      A sustained connection flood on port 443 exhausted the origin server's open file descriptors, after which nginx could accept no new connections at all.
+  - >-
+      The access log was empty for the whole window: connections died at accept and TLS, so no request ever reached the HTTP layer to be logged.
+  - >-
+      Traffic ran at roughly 8,000-10,000 packets per second but only about 1 MB/s — the ratio that distinguishes connection-establishment floods from real payload.
+  - >-
+      The fix was to hide the origin behind a CDN and restrict ports 80 and 443 at the host firewall to the proxy's published IP ranges.
+  - >-
+      Fully mitigated in about six hours, most of which was diagnosis rather than remediation.
 sources:
   - title: Understanding and Responding to Distributed Denial-of-Service Attacks
     url: https://www.cisa.gov/resources-tools/resources/understanding-and-responding-distributed-denial-service-attacks

@@ -35,7 +35,11 @@ export const GET: APIRoute = async ({ site }) => {
 - Tags: ${post.data.tags.join(', ')}
 ${post.data.firstHand ? '- Note: first-hand account by the author.\n' : ''}
 > ${post.data.excerpt}
-
+${
+  post.data.keyPoints.length
+    ? `\n## Key points\n\n${post.data.keyPoints.map((point) => `- ${point}`).join('\n')}\n`
+    : ''
+}
 ${post.body?.trim() ?? ''}${sources}`
   })
 

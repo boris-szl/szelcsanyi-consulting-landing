@@ -5,8 +5,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import Reveal from '@/components/Reveal.astro'
 import CTABand from '@/components/CTABand.astro'
 import Sources from '@/components/Sources.astro'
+import KeyPoints from '@/components/KeyPoints.astro'
 import Badge from '@/components/ui/Badge.astro'
 import { config } from '@/config'
+import { relatedPosts, tagSlug } from '@/lib/tags'
 import {
   abs,
   breadcrumbs,
@@ -37,6 +39,7 @@ export async function getStaticPaths() {
         ) ??
         posts.find((candidate) => candidate.data.lang === post.data.lang && candidate.id !== post.id) ??
         posts[(i + 1) % posts.length],
+      siblings: posts,
       translations: posts.filter(
         (other) =>
           other.id !== post.id &&
@@ -50,10 +53,12 @@ export async function getStaticPaths() {
 type Props = {
   post: CollectionEntry<'blog'>
   next: CollectionEntry<'blog'>
+  siblings: CollectionEntry<'blog'>[]
   translations: CollectionEntry<'blog'>[]
 }
 
-const { post, next, translations }: Props = Astro.props
+const { post, next, siblings, translations }: Props = Astro.props
+const related = relatedPosts(post, siblings)
 const lang = post.data.lang
 const alternates = translations.map((t) => ({
   lang: t.data.lang,
@@ -62,13 +67,21 @@ const alternates = translations.map((t) => ({
 
 /* UI strings — only the handful the post chrome needs. */
 const t = {
-  en: { all: 'All writing', by: 'By', updated: 'Updated', next: 'Next up', alsoIn: 'Also in' },
+  en: {
+    all: 'All writing',
+    by: 'By',
+    updated: 'Updated',
+    next: 'Next up',
+    alsoIn: 'Also in',
+    related: 'Related reading',
+  },
   de: {
     all: 'Alle Beiträge',
     by: 'Von',
     updated: 'Aktualisiert',
     next: 'Als Nächstes',
     alsoIn: 'Auch auf',
+    related: 'Weiterlesen',
   },
 }[lang]
 
@@ -99,6 +112,9 @@ const jsonLd = [
     publisher: { '@id': BUSINESS_ID },
     image: abs(ogImage),
     isAccessibleForFree: true,
+    ...(post.data.keyPoints.length
+      ? { abstract: post.data.keyPoints.join(' ') }
+      : {}),
     /*
       `citation` is what lets an answer engine trace a claim in this post back
       to the primary document rather than back to the post itself.
@@ -174,7 +190,18 @@ if (alternates.length > 0) {
         </p>
 
         <div class="mt-6 flex flex-wrap gap-2">
-          {post.data.tags.map((tag) => <Badge>{tag}</Badge>)}
+          {
+            post.data.tags.map((tag) =>
+              /* German tags have no archive of their own — see lib/tags.ts. */
+              post.data.lang === 'en' ? (
+                <a href={`/blog/tag/${tagSlug(tag)}`} class="transition-opacity hover:opacity-80">
+                  <Badge>{tag}</Badge>
+                </a>
+              ) : (
+                <Badge>{tag}</Badge>
+              ),
+            )
+          }
         </div>
 
         {
@@ -198,6 +225,8 @@ if (alternates.length > 0) {
     </header>
 
     <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8">
+      <KeyPoints points={post.data.keyPoints} lang={lang} />
+
       <div class="prose-datasheet">
         <Content />
       </div>
@@ -205,6 +234,34 @@ if (alternates.length > 0) {
       <Sources sources={post.data.sources} lang={lang} />
     </div>
   </article>
+
+  {
+    related.length > 0 && (
+      <section class="border-t border-line">
+        <div class="mx-auto max-w-3xl px-5 py-12 sm:px-8">
+          <Reveal>
+            <span class="mono-label">{t.related}</span>
+            <div class="mt-6 flex flex-col divide-y divide-line border-y border-line">
+              {related.map((other) => (
+                <a
+                  href={`/blog/${other.id}`}
+                  class="group grid gap-2 py-5 transition-colors hover:bg-surface sm:grid-cols-[1fr_auto] sm:items-center sm:gap-6"
+                >
+                  <div>
+                    <div class="font-display text-lg font-semibold leading-snug text-ink group-hover:text-accent">
+                      {other.data.title}
+                    </div>
+                    <p class="mt-1 text-sm leading-relaxed text-muted">{other.data.excerpt}</p>
+                  </div>
+                  <span class="mono-label whitespace-nowrap">{other.data.readingTime}</span>
+                </a>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    )
+  }
 
   <section class="border-t border-line bg-surface">
     <div class="mx-auto max-w-3xl px-5 py-10 sm:px-8">
