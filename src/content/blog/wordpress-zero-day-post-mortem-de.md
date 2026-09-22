@@ -1,5 +1,5 @@
 ---
-title: Von Google gefunden, nicht vom Monitoring — Analyse eines WordPress-Zero-Days
+title: Durch ein Google-Suchergebnis, nicht durch das Monitoring — Analyse eines WordPress-Zero-Days
 date: 2026-09-17
 lang: de
 translationKey: wordpress-zero-day-post-mortem
