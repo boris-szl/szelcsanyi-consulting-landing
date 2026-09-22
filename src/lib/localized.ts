@@ -21,14 +21,16 @@ export type LocalizedProject = Project & { statusLabel: string }
 export type LocalizedRole = Role & { statusLabel: string }
 
 export function localizedProjects(lang: Locale): LocalizedProject[] {
-  return projects.map((project) => {
+  return projects
+    .filter((project) => !project.draft)
+    .map((project) => {
     const de = lang === 'de' ? projectsDe[project.slug] : undefined
     return {
       ...project,
       ...(de ? { ...de, status: project.status } : {}),
       statusLabel: de?.status ?? project.status,
-    }
-  })
+      }
+    })
 }
 
 export function localizedRoles(lang: Locale): LocalizedRole[] {

@@ -8,6 +8,9 @@
 
 export interface ProjectDe {
   role: string
+  /* Month abbreviations and "now" differ; an untranslated period is the kind
+     of small leak that makes a localised page feel machine-made. */
+  period: string
   status: string
   domain: string
   tagline: string
@@ -20,6 +23,7 @@ export interface ProjectDe {
 export const projectsDe: Record<string, ProjectDe> = {
   onduty: {
     role: 'Mitgründer & CTO',
+    period: 'Jan. 2026 — heute',
     status: 'In Entwicklung',
     domain: 'Security- & Field-Ops-SaaS',
     tagline: 'Das digitale Rückgrat für moderne Außendienstteams.',
@@ -33,6 +37,7 @@ export const projectsDe: Record<string, ProjectDe> = {
   },
   nisura: {
     role: 'Gründer & CTO',
+    period: 'Juni 2026 — heute',
     status: 'In Entwicklung',
     domain: 'Cyber-Risiko-Quantifizierung',
     tagline: 'Ihre Angriffsfläche in Euro übersetzt.',
@@ -46,6 +51,7 @@ export const projectsDe: Record<string, ProjectDe> = {
   },
   booksecurity: {
     role: 'Lead Developer & Architekt',
+    period: '2026 — heute',
     status: 'Live',
     domain: 'Sicherheitsdienste auf Abruf',
     tagline: 'Professioneller Schutz, in 60 Sekunden gebucht.',
@@ -59,6 +65,7 @@ export const projectsDe: Record<string, ProjectDe> = {
   },
   yukbul: {
     role: 'Lead Developer & Architekt',
+    period: '2026 — heute',
     status: 'Live',
     domain: 'Logistik / Frachtvermittlung',
     tagline: 'Nicht mehr nach Fracht suchen. Die Fracht findet Sie.',
@@ -72,6 +79,7 @@ export const projectsDe: Record<string, ProjectDe> = {
   },
   'psm-austria': {
     role: 'Technischer Berater',
+    period: '2024 — heute',
     status: 'Beratung',
     domain: 'Physische Sicherheitsdienste',
     tagline: 'Ihr Partner für professionelle Sicherheit.',
@@ -85,6 +93,7 @@ export const projectsDe: Record<string, ProjectDe> = {
   },
   easyprep: {
     role: 'Technischer Berater',
+    period: '2026 — heute',
     status: 'Beratung',
     domain: 'EdTech / Prüfungsvorbereitung',
     tagline: 'Eine Lernplattform für die Prüfungen, auf die es ankommt.',
@@ -98,6 +107,7 @@ export const projectsDe: Record<string, ProjectDe> = {
   },
   'nu-education': {
     role: 'Software Engineering & Backend Lead',
+    period: '2022 — 2025',
     status: 'Abgeschlossen',
     domain: 'EdTech · berufliche Bildung',
     tagline: 'Berufliche Bildung der nächsten Generation.',

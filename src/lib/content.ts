@@ -68,6 +68,9 @@ export const services: Service[] = [
 ]
 
 export interface Project {
+  /* Kept out of the build until the engagement details are filled in — the
+     same idea as `draft` on a blog post. */
+  draft?: boolean
   slug: string
   ref: string
   name: string
@@ -171,7 +174,7 @@ export const projects: Project[] = [
     name: 'PSM Austria',
     url: 'https://psm-austria.at/',
     role: 'Technical Advisor',
-    period: '2026 — now',
+    period: '2024 — now',
     status: 'Advisory',
     domain: 'Physical security services',
     tagline: 'Your partner for professional security.',
@@ -224,6 +227,64 @@ export const projects: Project[] = [
     outcome:
       'A dependable backend and delivery pipeline that scaled with the product. I moved from Software Engineer to Backend Lead and then Software Engineering Lead.',
     stack: ['Java', 'Spring Boot', 'Kubernetes', 'Docker', 'Postgres', 'AWS'],
+  },
+  {
+    draft: true,
+    slug: 'astrotec',
+    ref: 'P-08',
+    name: 'Astrotec',
+    url: 'https://www.astrotec.at/',
+    role: 'Security Advisor',
+    period: 'TODO — since when?',
+    status: 'Advisory',
+    domain: 'Website security · construction',
+    tagline: 'Security a family business can actually weigh up.',
+    summary:
+      'A Vienna waterproofing and sealing contractor working across Austria, whose public web presence needed a security review and concrete remediation.',
+    problem:
+      'TODO — what was the state before? (exposed origin, outdated CMS, no monitoring, something else)',
+    work:
+      'I reviewed the security of the website and implemented concrete measures, and set out the risks so they could be weighed without a technical background — what was necessary, and what was not.',
+    outcome: 'TODO — what changed, ideally with a number or a before/after.',
+    stack: ['TODO'],
+  },
+  {
+    draft: true,
+    slug: 'apapika',
+    ref: 'P-09',
+    name: 'Apapika',
+    url: 'https://www.apapika.com/',
+    role: 'Technical Advisor',
+    period: 'TODO — since when?',
+    status: 'Advisory',
+    domain: 'Franchise software · hospitality',
+    tagline: 'Software that scales with the franchise, not against it.',
+    summary:
+      'A Vienna-based poke and fusion restaurant group expanding by franchise, with ordering, locations, and a mobile app to support across sites.',
+    problem:
+      'TODO — what made scaling the software hard? (per-location data, ordering, franchisee onboarding, something else)',
+    work:
+      'I advise on implementing concrete, practical software solutions for the franchise side of the business — naming the trade-offs openly so the team can make the final call itself.',
+    outcome: 'TODO — what changed, ideally with a number or a before/after.',
+    stack: ['TODO'],
+  },
+  {
+    draft: true,
+    slug: 'anonymus',
+    ref: 'P-10',
+    name: 'Anonymus',
+    url: 'https://www.anonymus.ltd/',
+    role: 'Security Partner',
+    period: 'TODO — since when?',
+    status: 'Advisory',
+    domain: 'Security & risk management',
+    tagline: 'TODO — one line, in their words or yours.',
+    summary:
+      'A Prague-based, vendor-independent security and risk-management consultancy serving companies and public authorities, whose services span risk analysis, crisis management, background checks, and custom security software.',
+    problem: 'TODO — what do they bring you in for?',
+    work: 'TODO — what does the partnership actually cover? (technical due diligence, secure software delivery, cyber assessments)',
+    outcome: 'TODO — what changed, ideally with a number or a before/after.',
+    stack: ['TODO'],
   },
 ]
 

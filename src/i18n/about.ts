@@ -78,8 +78,14 @@ export const about: Record<'en' | 'de', AboutContent> = {
       {
         period: '2026 — now',
         role: 'Lead Engineer & Technical Advisor',
-        org: 'BookSecurity · Yükbul · PSM Austria · EasyPrep',
-        note: 'Architecting and advising marketplaces and platforms across the UAE, Turkey, and Austria.',
+        org: 'BookSecurity · Yükbul · EasyPrep',
+        note: 'Architecting and advising marketplaces and platforms across the UAE, Turkey, and Switzerland.',
+      },
+      {
+        period: '2024 — now',
+        role: 'Technical Advisor',
+        org: 'PSM Austria',
+        note: 'Technology strategy and architecture for an established Austrian security operator, including incident response.',
       },
       {
         period: '2022 — 2025',
@@ -166,8 +172,14 @@ export const about: Record<'en' | 'de', AboutContent> = {
       {
         period: '2026 — heute',
         role: 'Leitender Entwickler & technischer Berater',
-        org: 'BookSecurity · Yükbul · PSM Austria · EasyPrep',
-        note: 'Architektur und Beratung für Marktplätze und Plattformen in den VAE, der Türkei und Österreich.',
+        org: 'BookSecurity · Yükbul · EasyPrep',
+        note: 'Architektur und Beratung für Marktplätze und Plattformen in den VAE, der Türkei und der Schweiz.',
+      },
+      {
+        period: '2024 — heute',
+        role: 'Technischer Berater',
+        org: 'PSM Austria',
+        note: 'Technologiestrategie und Architektur für einen etablierten österreichischen Sicherheitsdienstleister, einschließlich Incident Response.',
       },
       {
         period: '2022 — 2025',
