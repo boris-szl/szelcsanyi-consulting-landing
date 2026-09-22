@@ -231,32 +231,80 @@ export interface Testimonial {
   name: string
   role: string
   quote: string
+  /*
+    The language the person actually spoke in. `quote` is their wording in
+    that language; `translation` is the other language, and the page labels it
+    as a translation. Presenting a translation as though it were the original
+    is the one thing a testimonial cannot survive, so the label is not
+    optional — see Testimonials.astro.
+  */
+  lang: 'en' | 'de'
+  translation: string
 }
 
 export const testimonials: Testimonial[] = [
   {
     name: 'Patrick Schweizer',
     role: 'Head of Product · nu.Education',
+    lang: 'en',
     quote:
       'One of the most reliable and dedicated engineers I’ve ever worked with. If something breaks at 2am, Boris is the one you can call — and you know it will get fixed. No drama, no excuses, just ownership and results. A true team player who naturally mentors others and raises the quality of the whole team.',
+    translation:
+      'Einer der verlässlichsten und engagiertesten Entwickler, mit denen ich je gearbeitet habe. Wenn um zwei Uhr nachts etwas kaputtgeht, ist Boris derjenige, den man anrufen kann — und man weiß, dass es in Ordnung gebracht wird. Kein Drama, keine Ausreden, nur Verantwortung und Ergebnisse. Ein echter Teamplayer, der andere selbstverständlich anleitet und die Qualität des ganzen Teams hebt.',
   },
   {
     name: 'Angelos Zaimis',
     role: 'Software Engineer · nu.Education',
+    lang: 'en',
     quote:
       'For more than three years he consistently stood out as both a highly skilled engineer and a strong technical leader. As Tech Lead, he was the person the team turned to when things needed immediate attention — composed under pressure, and fully accountable for resolving problems properly.',
+    translation:
+      'Über mehr als drei Jahre hinweg ist er durchgehend als sehr fähiger Entwickler und als starke technische Führungskraft aufgefallen. Als Tech Lead war er die Person, an die sich das Team wandte, wenn etwas sofort Aufmerksamkeit brauchte — ruhig unter Druck und voll verantwortlich dafür, Probleme richtig zu lösen.',
   },
   {
     name: 'Robert Mejlerö',
     role: 'CTO · was Boris’s manager at CLEO AG',
+    lang: 'en',
     quote:
       'I’m pleased to recommend Boris for any DevOps role. He quickly developed a strong command of Kubernetes, cloud migration, and service orchestration — and applies DevOps principles and techniques effectively.',
+    translation:
+      'Ich empfehle Boris gern für jede DevOps-Rolle. Er hat sich schnell fundierte Kenntnisse in Kubernetes, Cloud-Migration und Service-Orchestrierung angeeignet — und wendet DevOps-Prinzipien und -Techniken wirksam an.',
   },
   {
     name: 'Amin El Abida',
     role: 'Senior Test Automation Engineer',
+    lang: 'en',
     quote:
       'A remarkable engineer whose agility and adeptness at mastering new technologies stand out strikingly. In a high-pressure environment, his capacity to remain unflappable and maintain focus is commendable — consistently delivering solutions that are innovative and efficient.',
+    translation:
+      'Ein bemerkenswerter Entwickler, dessen Beweglichkeit und Geschick im Aneignen neuer Technologien deutlich herausstechen. In einem Umfeld mit hohem Druck ist seine Fähigkeit, gelassen und konzentriert zu bleiben, bemerkenswert — und er liefert durchgehend Lösungen, die innovativ und effizient sind.',
+  },
+  {
+    name: 'Hakan Safak',
+    role: 'Geschäftsführer · Astrotec',
+    lang: 'de',
+    quote:
+      'Boris hat die Sicherheit unserer Website geprüft und konkrete Maßnahmen umgesetzt. Er erklärt Risiken so, dass man sie ohne technischen Hintergrund abwägen kann, und sagt klar, was nötig ist und was nicht.',
+    translation:
+      'Boris reviewed the security of our website and implemented concrete measures. He explains risks in a way you can weigh up without a technical background, and he says plainly what is necessary and what is not.',
+  },
+  {
+    name: 'Johann Mouatti',
+    role: 'PSM Austria',
+    lang: 'de',
+    quote:
+      'Boris begleitet uns als technischer Berater schon seit 3 Jahren und hat wichtige Sicherheitslücken und Sicherheitsvorfälle gelöst. Was ihn auszeichnet: Er benennt auch das, was man nicht hören will, und liefert dazu einen belastbaren Plan.',
+    translation:
+      'Boris has advised us technically for three years now, and has resolved significant vulnerabilities and security incidents. What sets him apart: he also names the things you would rather not hear — and brings a workable plan with them.',
+  },
+  {
+    name: 'Soleman Abubakr',
+    role: 'CEO · Apapika',
+    lang: 'de',
+    quote:
+      'Boris berät uns technisch bei der Umsetzung konkreter, praxistauglicher Softwarelösungen für die Franchise-Branche. Er spricht Zielkonflikte offen an und versetzt uns in die Lage, die Entscheidung am Ende selbst zu treffen.',
+    translation:
+      'Boris advises us on implementing concrete, practical software solutions for the franchise industry. He is open about trade-offs and puts us in a position to make the final call ourselves.',
   },
 ]
 

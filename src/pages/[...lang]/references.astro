@@ -1,0 +1,110 @@
+---
+import { Quote } from '@lucide/astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import Reveal from '@/components/Reveal.astro'
+import CTABand from '@/components/CTABand.astro'
+import { localizedTestimonials } from '@/lib/localized'
+import { abs, breadcrumbs, PERSON_ID, WEBSITE_ID } from '@/lib/meta'
+import { localePaths, langParam, localizePath, t } from '@/i18n'
+
+export function getStaticPaths() {
+  return localePaths()
+}
+
+const lang = langParam(Astro.params.lang)
+const s = t(lang)
+
+/* Same rule as the home page: readable version first, translations labelled. */
+const references = localizedTestimonials(lang)
+  .map((item) => ({
+    ...item,
+    text: item.lang === lang ? item.quote : item.translation,
+    translated: item.lang !== lang,
+  }))
+  .sort((a, b) => Number(a.translated) - Number(b.translated))
+
+function initials(name: string) {
+  return name
+    .split(' ')
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join('')
+}
+
+const description =
+  lang === 'de'
+    ? 'Was Kolleginnen, Kollegen, Vorgesetzte und Kunden über die Zusammenarbeit mit Boris Szelcsányi sagen — nu.Education, CLEO AG, Astrotec, PSM Austria und Apapika.'
+    : 'What colleagues, managers, and clients say about working with Boris Szelcsányi — nu.Education, CLEO AG, Astrotec, PSM Austria, and Apapika.'
+
+const url = abs(localizePath('/references', lang))
+const jsonLd = [
+  {
+    '@type': 'CollectionPage',
+    '@id': `${url}#page`,
+    url,
+    name: s.references.title,
+    description,
+    inLanguage: lang,
+    isPartOf: { '@id': WEBSITE_ID },
+  },
+  /*
+    Each endorsement as a Review of the person. `reviewBody` carries the words
+    actually given, in the language they were given in — not the translation,
+    which would misattribute the wording in structured data where no label can
+    travel with it.
+  */
+  ...references.map((item) => ({
+    '@type': 'Review',
+    itemReviewed: { '@id': PERSON_ID },
+    author: { '@type': 'Person', name: item.name, jobTitle: item.role },
+    reviewBody: item.quote,
+    inLanguage: item.lang,
+  })),
+  breadcrumbs([{ name: s.references.eyebrow, path: localizePath('/references', lang) }]),
+]
+---
+
+<BaseLayout title={s.references.title} description={description} lang={lang} jsonLd={jsonLd}>
+  <PageHeader
+    eyebrowRef="§ REFS"
+    eyebrow={s.references.eyebrow}
+    title={s.references.title}
+    intro={s.references.intro}
+  />
+
+  <section class="mx-auto max-w-4xl px-5 py-16 sm:px-8">
+    <div class="flex flex-col gap-6">
+      {
+        references.map((item, i) => (
+          <Reveal delay={i * 50}>
+            <figure class="rounded-[var(--radius-card)] border border-line bg-surface p-7 sm:p-8">
+              <Quote class="size-6 text-accent" stroke-width={1.6} aria-hidden="true" />
+              <blockquote class="mt-4 text-lg leading-relaxed text-ink/90">{item.text}</blockquote>
+              <figcaption class="mt-6 flex items-center gap-4 border-t border-line pt-5">
+                <span class="grid size-11 shrink-0 place-items-center rounded-full border border-line bg-surface-2 font-mono text-xs font-medium text-accent">
+                  {initials(item.name)}
+                </span>
+                <span class="flex flex-col">
+                  <span class="font-display font-semibold text-ink">{item.name}</span>
+                  <span class="mono-label normal-case tracking-normal">{item.role}</span>
+                </span>
+                {item.translated && (
+                  <span class="ml-auto text-right font-mono text-[0.65rem] uppercase tracking-wide text-muted">
+                    {s.common.translatedFrom.replace('{lang}', s.common[`language_${item.lang}`])}
+                  </span>
+                )}
+              </figcaption>
+            </figure>
+          </Reveal>
+        ))
+      }
+    </div>
+
+    <Reveal class="mt-10">
+      <p class="max-w-2xl text-sm leading-relaxed text-muted">{s.references.note}</p>
+    </Reveal>
+  </section>
+
+  <CTABand lang={lang} />
+</BaseLayout>

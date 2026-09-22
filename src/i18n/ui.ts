@@ -46,6 +46,10 @@ const en = {
       location: 'Vienna & St. Gallen',
       availabilityValue: 'Available Q3 · 2 slots',
       noTranslation: 'Not available in this language — go to the blog index',
+      translatedFrom: 'Translated from {lang}',
+      language_en: 'English',
+      language_de: 'German',
+      allReferences: 'All references',
       footerTagline:
         'I design, build, and lead the engineering behind security-tech and marketplace products.',
       footerRemote: 'Remote-first from {location}, working across {timezone}.',
@@ -82,7 +86,7 @@ const en = {
       testimonialsEyebrow: 'Endorsements',
       testimonialsTitle: 'What the people I’ve built with say.',
       testimonialsBody:
-        'From colleagues and managers at nu.Education and CLEO AG — verbatim from LinkedIn.',
+        'Verbatim from colleagues, managers, and clients — at nu.Education, CLEO AG, Astrotec, PSM Austria, and Apapika. Quotes appear in the language they were given in.',
     },
     cta: {
       title: 'Have a system that needs to hold up? Let’s talk about it.',
@@ -142,6 +146,14 @@ const en = {
       tools: 'Tools I reach for',
       workWithMe: 'Work with me',
       portraitAlt: 'Portrait of',
+    },
+    references: {
+      eyebrow: 'References',
+      title: 'What the people I’ve worked with say.',
+      intro:
+        'Endorsements from colleagues, managers, and clients across nu.Education, CLEO AG, Astrotec, PSM Austria, and Apapika.',
+      note:
+        'Each quote is reproduced as it was given. Where the original was in the other language, the translation is marked as such and the original wording is what appears in this page’s structured data.',
     },
     blog: {
       eyebrow: 'Writing',
@@ -224,6 +236,10 @@ export const ui: Record<'en' | 'de', UI> = {
       location: 'Wien & St. Gallen',
       availabilityValue: 'Verfügbar ab Q3 · 2 Plätze',
       noTranslation: 'In dieser Sprache nicht verfügbar — zur Beitragsübersicht',
+      translatedFrom: 'Aus dem {lang} übersetzt',
+      language_en: 'Englischen',
+      language_de: 'Deutschen',
+      allReferences: 'Alle Referenzen',
       footerTagline:
         'Ich entwerfe, baue und verantworte die Technik hinter Security- und Marktplatz-Produkten.',
       footerRemote: 'Remote-first aus {location}, tätig in {timezone}.',
@@ -260,7 +276,7 @@ export const ui: Record<'en' | 'de', UI> = {
       testimonialsEyebrow: 'Referenzen',
       testimonialsTitle: 'Was die Menschen sagen, mit denen ich gebaut habe.',
       testimonialsBody:
-        'Von Kolleginnen, Kollegen und Vorgesetzten bei nu.Education und CLEO AG — wörtlich von LinkedIn.',
+        'Wörtlich von Kolleginnen, Kollegen, Vorgesetzten und Kunden — bei nu.Education, CLEO AG, Astrotec, PSM Austria und Apapika. Zitate stehen in der Sprache, in der sie abgegeben wurden.',
     },
     cta: {
       title: 'Ein System, das halten muss? Sprechen wir darüber.',
@@ -320,6 +336,14 @@ export const ui: Record<'en' | 'de', UI> = {
       tools: 'Womit ich arbeite',
       workWithMe: 'Zusammenarbeiten',
       portraitAlt: 'Porträt von',
+    },
+    references: {
+      eyebrow: 'Referenzen',
+      title: 'Was die Menschen sagen, mit denen ich gearbeitet habe.',
+      intro:
+        'Referenzen von Kolleginnen, Kollegen, Vorgesetzten und Kunden bei nu.Education, CLEO AG, Astrotec, PSM Austria und Apapika.',
+      note:
+        'Jedes Zitat ist so wiedergegeben, wie es abgegeben wurde. Wo das Original in der anderen Sprache verfasst war, ist die Übersetzung als solche gekennzeichnet; in den strukturierten Daten dieser Seite steht der Originalwortlaut.',
     },
     blog: {
       eyebrow: 'Beiträge',

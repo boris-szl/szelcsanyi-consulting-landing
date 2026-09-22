@@ -172,4 +172,7 @@ export const testimonialRolesDe: Record<string, string> = {
   'Head of Product · nu.Education': 'Head of Product · nu.Education',
   'Software Engineer · nu.Education': 'Software Engineer · nu.Education',
   'CTO · was Boris’s manager at CLEO AG': 'CTO · war Boris’ Vorgesetzter bei CLEO AG',
+  'Geschäftsführer · Astrotec': 'Geschäftsführer · Astrotec',
+  'PSM Austria': 'PSM Austria',
+  'CEO · Apapika': 'CEO · Apapika',
 }
