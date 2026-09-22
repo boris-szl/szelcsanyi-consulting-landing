@@ -9,9 +9,10 @@ import { localizePath, t, type Locale } from '@/i18n'
 interface Props {
   lang: Locale
   path: string
+  alternates?: { lang: Locale; path: string }[]
 }
 
-const { lang, path } = Astro.props
+const { lang, path, alternates } = Astro.props
 const strings = t(lang)
 const nav = [
   { label: strings.nav.work, to: '/work' },
@@ -38,7 +39,7 @@ const year = new Date().getFullYear()
         </p>
         <div class="mt-5 flex flex-wrap items-center gap-4">
           <StatusBadge lang={lang} />
-          <LanguageSwitcher lang={lang} path={path} />
+          <LanguageSwitcher lang={lang} path={path} alternates={alternates} />
         </div>
       </div>
 

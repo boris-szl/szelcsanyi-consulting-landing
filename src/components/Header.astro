@@ -11,9 +11,10 @@ interface Props {
   lang: Locale
   /** Current path with any /de prefix already stripped. */
   path: string
+  alternates?: { lang: Locale; path: string }[]
 }
 
-const { lang, path } = Astro.props
+const { lang, path, alternates } = Astro.props
 const strings = t(lang)
 
 const nav = [
@@ -55,7 +56,7 @@ const href = (to: string) => localizePath(to, lang)
     </nav>
 
     <div class="flex items-center gap-3">
-      <LanguageSwitcher lang={lang} path={path} class="hidden sm:flex" />
+      <LanguageSwitcher lang={lang} path={path} alternates={alternates} class="hidden sm:flex" />
       <Button href={href('/contact')} size="sm" class="hidden md:inline-flex">
         {strings.nav.bookCall}
       </Button>
@@ -92,7 +93,7 @@ const href = (to: string) => localizePath(to, lang)
         ))
       }
       <div class="flex items-center justify-between gap-4 pt-4">
-        <LanguageSwitcher lang={lang} path={path} />
+        <LanguageSwitcher lang={lang} path={path} alternates={alternates} />
         <Button href={href('/contact')} class="flex-1">{strings.nav.bookCall}</Button>
       </div>
     </nav>

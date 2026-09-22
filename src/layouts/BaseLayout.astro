@@ -65,11 +65,11 @@ const strings = t(lang)
       {strings.nav.skipToContent}
     </a>
     <div class="flex min-h-dvh flex-col">
-      <Header lang={lang} path={path} />
+      <Header lang={lang} path={path} alternates={alternates} />
       <main id="main" class="flex-1">
         <slot />
       </main>
-      <Footer lang={lang} path={path} />
+      <Footer lang={lang} path={path} alternates={alternates} />
     </div>
 
     <script>

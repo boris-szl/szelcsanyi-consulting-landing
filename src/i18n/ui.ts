@@ -45,6 +45,7 @@ const en = {
       firstHandNote: ' · first-hand account',
       location: 'Vienna & St. Gallen',
       availabilityValue: 'Available Q3 · 2 slots',
+      noTranslation: 'Not available in this language — go to the blog index',
       footerTagline:
         'I design, build, and lead the engineering behind security-tech and marketplace products.',
       footerRemote: 'Remote-first from {location}, working across {timezone}.',
@@ -222,6 +223,7 @@ export const ui: Record<'en' | 'de', UI> = {
       firstHandNote: ' · aus erster Hand',
       location: 'Wien & St. Gallen',
       availabilityValue: 'Verfügbar ab Q3 · 2 Plätze',
+      noTranslation: 'In dieser Sprache nicht verfügbar — zur Beitragsübersicht',
       footerTagline:
         'Ich entwerfe, baue und verantworte die Technik hinter Security- und Marktplatz-Produkten.',
       footerRemote: 'Remote-first aus {location}, tätig in {timezone}.',

@@ -4,8 +4,10 @@
   everyone to the homepage — landing on /de after clicking "DE" from a project
   page is the single most annoying thing a language switcher can do.
 
-  Pages that exist in only one language pass `only`, and the switcher then
-  links to that language's homepage instead of a URL that would 404.
+  Not every page exists in both languages: a blog post is only translated if
+  someone wrote the translation. `alternates` therefore carries the URLs that
+  actually exist, and anything missing falls back to `fallback` (the section
+  index) rather than linking confidently at a 404.
 */
 import { LOCALES, LOCALE_NAME, LOCALE_SHORT, localizePath, t, type Locale } from '@/i18n'
 import { cn } from '@/lib/utils'
@@ -14,11 +16,29 @@ interface Props {
   lang: Locale
   /** Path without a locale prefix, e.g. "/work/onduty". */
   path: string
+  /** Locale variants known to exist. Defaults to "the same path in both". */
+  alternates?: { lang: Locale; path: string }[]
   class?: string
 }
 
-const { lang, path, class: className } = Astro.props
+const { lang, path, alternates, class: className } = Astro.props
 const strings = t(lang)
+
+/*
+  With no explicit list, assume the page exists at the same path in both
+  locales — true for every page except blog posts, which pass their own.
+*/
+const known = new Map(
+  (alternates ?? LOCALES.map((locale) => ({ lang: locale, path: localizePath(path, locale) }))).map(
+    (alt) => [alt.lang, alt.path],
+  ),
+)
+
+/** Nearest sensible landing place when a translation does not exist. */
+function fallbackFor(locale: Locale): string {
+  const section = path.startsWith('/blog') ? '/blog' : '/'
+  return localizePath(section, locale)
+}
 ---
 
 <div
@@ -36,11 +56,12 @@ const strings = t(lang)
           </span>
         ) : (
           <a
-            href={localizePath(path, locale)}
-            hreflang={locale}
+            href={known.get(locale) ?? fallbackFor(locale)}
+            hreflang={known.has(locale) ? locale : undefined}
             lang={locale}
             class="px-1 text-muted transition-colors hover:text-accent"
             aria-label={LOCALE_NAME[locale]}
+            title={known.has(locale) ? undefined : strings.common.noTranslation}
           >
             {LOCALE_SHORT[locale]}
           </a>
