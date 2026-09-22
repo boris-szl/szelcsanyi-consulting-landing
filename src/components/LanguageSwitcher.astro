@@ -1,0 +1,51 @@
+---
+/*
+  Switches between the two locales for the *current* page rather than sending
+  everyone to the homepage — landing on /de after clicking "DE" from a project
+  page is the single most annoying thing a language switcher can do.
+
+  Pages that exist in only one language pass `only`, and the switcher then
+  links to that language's homepage instead of a URL that would 404.
+*/
+import { LOCALES, LOCALE_NAME, LOCALE_SHORT, localizePath, t, type Locale } from '@/i18n'
+import { cn } from '@/lib/utils'
+
+interface Props {
+  lang: Locale
+  /** Path without a locale prefix, e.g. "/work/onduty". */
+  path: string
+  class?: string
+}
+
+const { lang, path, class: className } = Astro.props
+const strings = t(lang)
+---
+
+<div
+  class={cn('flex items-center gap-1 font-mono text-[0.7rem] uppercase tracking-wide', className)}
+  role="group"
+  aria-label={strings.nav.language}
+>
+  {
+    LOCALES.map((locale, i) => (
+      <>
+        {i > 0 && <span class="text-line" aria-hidden="true">/</span>}
+        {locale === lang ? (
+          <span class="px-1 text-ink" aria-current="true" lang={locale}>
+            {LOCALE_SHORT[locale]}
+          </span>
+        ) : (
+          <a
+            href={localizePath(path, locale)}
+            hreflang={locale}
+            lang={locale}
+            class="px-1 text-muted transition-colors hover:text-accent"
+            aria-label={LOCALE_NAME[locale]}
+          >
+            {LOCALE_SHORT[locale]}
+          </a>
+        )}
+      </>
+    ))
+  }
+</div>

@@ -2,7 +2,16 @@
 import { Quote } from '@lucide/astro'
 import SectionEyebrow from '@/components/SectionEyebrow.astro'
 import Reveal from '@/components/Reveal.astro'
-import { testimonials } from '@/lib/content'
+import { localizedTestimonials } from '@/lib/localized'
+import { t, type Locale } from '@/i18n'
+
+interface Props {
+  lang?: Locale
+}
+
+const { lang = 'en' } = Astro.props
+const s = t(lang)
+const testimonials = localizedTestimonials(lang)
 
 function initials(name: string) {
   return name
@@ -15,13 +24,11 @@ function initials(name: string) {
 
 <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
   <Reveal>
-    <SectionEyebrow mark="§06">Endorsements</SectionEyebrow>
+    <SectionEyebrow mark="§06">{s.home.testimonialsEyebrow}</SectionEyebrow>
     <h2 class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-      What the people I’ve built with say.
+      {s.home.testimonialsTitle}
     </h2>
-    <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
-      From colleagues and managers at nu.Education and CLEO AG — verbatim from LinkedIn.
-    </p>
+    <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">{s.home.testimonialsBody}</p>
   </Reveal>
 
   <div class="mt-12 gap-6 md:columns-2 [&>*]:mb-6 [&>*]:break-inside-avoid">

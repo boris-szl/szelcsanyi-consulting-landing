@@ -9,6 +9,8 @@ import KeyPoints from '@/components/KeyPoints.astro'
 import Badge from '@/components/ui/Badge.astro'
 import { config } from '@/config'
 import { relatedPosts, tagSlug } from '@/lib/tags'
+import { postSlug, postPath } from '@/lib/posts'
+import { LOCALES, langParam, localizePath, t } from '@/i18n'
 import {
   abs,
   breadcrumbs,
@@ -20,34 +22,30 @@ import {
 } from '@/lib/meta'
 
 export async function getStaticPaths() {
-  const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-  )
-  return posts.map((post, i) => ({
-    params: { slug: post.id },
-    props: {
-      post,
-      /*
-        Wrap so the "next up" link never needs a second collection query, and
-        stay within the post's own language — a German reader should not be
-        handed an English article as the next step. Falls back to the plain
-        neighbour if this is the only post in its language.
-      */
-      next:
-        posts.find(
-          (candidate, j) => j !== i && candidate.data.lang === post.data.lang && j > i,
-        ) ??
-        posts.find((candidate) => candidate.data.lang === post.data.lang && candidate.id !== post.id) ??
-        posts[(i + 1) % posts.length],
-      siblings: posts,
-      translations: posts.filter(
-        (other) =>
-          other.id !== post.id &&
-          post.data.translationKey !== undefined &&
-          other.data.translationKey === post.data.translationKey,
-      ),
-    },
-  }))
+  const all = await getCollection('blog', ({ data }) => !data.draft)
+  return LOCALES.flatMap((locale) => {
+    const posts = all
+      .filter((post) => post.data.lang === locale)
+      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+
+    return posts.map((post, i) => ({
+      params: { lang: locale === 'en' ? undefined : locale, slug: postSlug(post) },
+      props: {
+        post,
+        next: posts[(i + 1) % posts.length],
+        siblings: posts,
+        // The same article in the other locale, matched by translationKey.
+        translations: post.data.translationKey
+          ? all.filter(
+              (other) =>
+                other.id !== post.id &&
+                other.data.translationKey === post.data.translationKey &&
+                !other.data.draft,
+            )
+          : [],
+      },
+    }))
+  })
 }
 
 type Props = {
@@ -58,37 +56,17 @@ type Props = {
 }
 
 const { post, next, siblings, translations }: Props = Astro.props
+const lang = langParam(Astro.params.lang)
+const s = t(lang)
 const related = relatedPosts(post, siblings)
-const lang = post.data.lang
-const alternates = translations.map((t) => ({
-  lang: t.data.lang,
-  path: `/blog/${t.id}`,
-}))
+const alternates = [
+  { lang, path: postPath(post) },
+  ...translations.map((other) => ({ lang: other.data.lang, path: postPath(other) })),
+]
 
-/* UI strings — only the handful the post chrome needs. */
-const t = {
-  en: {
-    all: 'All writing',
-    by: 'By',
-    updated: 'Updated',
-    next: 'Next up',
-    alsoIn: 'Also in',
-    related: 'Related reading',
-  },
-  de: {
-    all: 'Alle Beiträge',
-    by: 'Von',
-    updated: 'Aktualisiert',
-    next: 'Als Nächstes',
-    alsoIn: 'Auch auf',
-    related: 'Weiterlesen',
-  },
-}[lang]
-
-const LANGUAGE_NAME = { en: 'English', de: 'Deutsch' } as const
 const { Content } = await render(post)
 
-const url = abs(`/blog/${post.id}`)
+const url = abs(postPath(post))
 /* Generated per post by ./[slug]/og.png.ts */
 const ogImage = `/blog/${post.id}/og.png`
 const published = isoDate(post.data.date)
@@ -129,17 +107,17 @@ const jsonLd = [
     })),
   },
   breadcrumbs([
-    { name: 'Writing', path: '/blog' },
-    { name: post.data.title, path: `/blog/${post.id}` },
+    { name: s.nav.blog, path: localizePath('/blog', lang) },
+    { name: post.data.title, path: postPath(post) },
   ]),
 ]
 
-if (alternates.length > 0) {
+if (translations.length > 0) {
   // Let the graph state the translation relationship too, not just hreflang.
-  ;(jsonLd[0] as Record<string, unknown>).workTranslation = alternates.map((alt) => ({
+  ;(jsonLd[0] as Record<string, unknown>).workTranslation = translations.map((other) => ({
     '@type': 'BlogPosting',
-    '@id': `${abs(alt.path)}#article`,
-    inLanguage: alt.lang,
+    '@id': `${abs(postPath(other))}#article`,
+    inLanguage: other.data.lang,
   }))
 }
 ---
@@ -158,10 +136,10 @@ if (alternates.length > 0) {
     <header class="border-b border-line">
       <div class="mx-auto max-w-3xl px-5 py-14 sm:px-8 lg:py-20">
         <a
-          href="/blog"
+          href={localizePath("/blog", lang)}
           class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
         >
-          <ArrowLeft class="size-4" /> {t.all}
+          <ArrowLeft class="size-4" /> {s.common.allWriting}
         </a>
         <div class="mt-8 flex flex-wrap items-center gap-3">
           <time class="mono-label text-accent" datetime={published}>
@@ -173,7 +151,7 @@ if (alternates.length > 0) {
             post.data.updated && (
               <>
                 <span class="h-px w-6 bg-line" />
-                <span class="mono-label">{t.updated} {formatDate(post.data.updated)}</span>
+                <span class="mono-label">{s.common.updated} {formatDate(post.data.updated)}</span>
               </>
             )
           }
@@ -184,17 +162,17 @@ if (alternates.length > 0) {
         <p class="mt-5 text-lg leading-relaxed text-muted">{post.data.excerpt}</p>
 
         <p class="mt-6 text-sm text-muted">
-          {t.by} <a href="/about" class="font-medium text-ink hover:text-accent" rel="author">
+          {s.common.by} <a href="/about" class="font-medium text-ink hover:text-accent" rel="author">
             {config.owner}</a
-          > — {config.role}{post.data.firstHand ? ' · first-hand account' : ''}
+          > — {config.role}{post.data.firstHand ? s.common.firstHandNote : ''}
         </p>
 
         <div class="mt-6 flex flex-wrap gap-2">
           {
             post.data.tags.map((tag) =>
               /* German tags have no archive of their own — see lib/tags.ts. */
-              post.data.lang === 'en' ? (
-                <a href={`/blog/tag/${tagSlug(tag)}`} class="transition-opacity hover:opacity-80">
+              lang === 'en' ? (
+                <a href={localizePath(`/blog/tag/${tagSlug(tag)}`, lang)} class="transition-opacity hover:opacity-80">
                   <Badge>{tag}</Badge>
                 </a>
               ) : (
@@ -207,15 +185,15 @@ if (alternates.length > 0) {
         {
           translations.length > 0 && (
             <p class="mt-6 text-sm text-muted">
-              {t.alsoIn}{' '}
+              {s.common.alsoIn}{' '}
               {translations.map((other) => (
                 <a
-                  href={`/blog/${other.id}`}
+                  href={postPath(other)}
                   hreflang={other.data.lang}
                   lang={other.data.lang}
                   class="font-medium text-ink underline underline-offset-4 hover:text-accent"
                 >
-                  {LANGUAGE_NAME[other.data.lang]}
+                  {other.data.lang === 'de' ? 'Deutsch' : 'English'}
                 </a>
               ))}
             </p>
@@ -240,11 +218,11 @@ if (alternates.length > 0) {
       <section class="border-t border-line">
         <div class="mx-auto max-w-3xl px-5 py-12 sm:px-8">
           <Reveal>
-            <span class="mono-label">{t.related}</span>
+            <span class="mono-label">{s.common.relatedReading}</span>
             <div class="mt-6 flex flex-col divide-y divide-line border-y border-line">
               {related.map((other) => (
                 <a
-                  href={`/blog/${other.id}`}
+                  href={postPath(other)}
                   class="group grid gap-2 py-5 transition-colors hover:bg-surface sm:grid-cols-[1fr_auto] sm:items-center sm:gap-6"
                 >
                   <div>
@@ -266,9 +244,9 @@ if (alternates.length > 0) {
   <section class="border-t border-line bg-surface">
     <div class="mx-auto max-w-3xl px-5 py-10 sm:px-8">
       <Reveal>
-        <a href={`/blog/${next.id}`} class="group flex items-center justify-between gap-4">
+        <a href={postPath(next)} class="group flex items-center justify-between gap-4">
           <div>
-            <span class="mono-label">{t.next}</span>
+            <span class="mono-label">{s.common.nextUp}</span>
             <div class="mt-1 font-display text-xl font-semibold text-ink group-hover:text-accent">
               {next.data.title}
             </div>
@@ -281,5 +259,5 @@ if (alternates.length > 0) {
     </div>
   </section>
 
-  <CTABand />
+  <CTABand lang={lang} />
 </BaseLayout>

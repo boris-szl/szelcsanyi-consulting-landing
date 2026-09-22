@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -18,11 +17,24 @@ import Testimonials from '@/components/Testimonials.astro'
 import CTABand from '@/components/CTABand.astro'
 import Button from '@/components/ui/Button.astro'
 import Badge from '@/components/ui/Badge.astro'
-import { services, projects, stats, stack, type IconName } from '@/lib/content'
-import { roles } from '@/lib/roles'
+import { stack, type IconName } from '@/lib/content'
+import { localizedProjects, localizedRoles, localizedServices, localizedStats } from '@/lib/localized'
+import { postsIn, postPath } from '@/lib/posts'
 import { site } from '@/lib/site'
 import { config } from '@/config'
 import { abs, formatDate, isoDate, BUSINESS_ID, WEBSITE_ID } from '@/lib/meta'
+import { localePaths, langParam, localizePath, t } from '@/i18n'
+
+export function getStaticPaths() {
+  return localePaths()
+}
+
+const lang = langParam(Astro.params.lang)
+const s = t(lang)
+const services = localizedServices(lang)
+const projects = localizedProjects(lang)
+const roles = localizedRoles(lang)
+const stats = localizedStats(lang)
 
 /* Service icons are stored as names in the data layer; resolve them here. */
 const icons: Record<IconName, typeof Boxes> = {
@@ -43,36 +55,39 @@ const specRows: [string, string][] = [
 ]
 
 /*
-  English only. A translated post shares its date with its original, so an
-  unfiltered "two most recent" showed the same article twice — once per
-  language — and pushed the genuinely second-newest post off the page.
-  This page is lang="en"; the translation is reachable from the post itself.
+  Scoped to this page's locale. A translation shares its original's date, so an
+  unfiltered "two most recent" listed the same article twice and pushed the
+  genuinely second-newest post off the page.
 */
-const latest = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en'))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 2)
+const latest = (await postsIn(lang)).slice(0, 2)
 
 const featured = ['onduty', 'nisura', 'nu-education'].map(
   (slug) => projects.find((p) => p.slug === slug)!,
 )
 
+const title = lang === 'de' ? 'szelcsanyi consulting — Software, die wirklich läuft' : config.seo.title
+const description =
+  lang === 'de'
+    ? 'Boris Szelcsányi — freiberuflicher Softwareentwickler und Fractional CTO. Ich baue und verantworte die Technik hinter Security- und Marktplatz-Produkten in EU, VAE und Türkei.'
+    : config.seo.description
+
 const jsonLd = [
   {
     '@type': 'WebPage',
-    '@id': `${abs('/')}#webpage`,
-    url: abs('/'),
-    name: config.seo.title,
-    description: config.seo.description,
+    '@id': `${abs(localizePath('/', lang))}#webpage`,
+    url: abs(localizePath('/', lang)),
+    name: title,
+    description,
     isPartOf: { '@id': WEBSITE_ID },
     about: { '@id': BUSINESS_ID },
-    inLanguage: 'en',
+    inLanguage: lang,
   },
   /* The service catalogue, so an answer engine can state what is on offer
      rather than inferring it from prose. */
   {
     '@type': 'OfferCatalog',
-    '@id': `${abs('/')}#services`,
-    name: 'Engineering services',
+    '@id': `${abs(localizePath('/', lang))}#services`,
+    name: lang === 'de' ? 'Leistungen' : 'Engineering services',
     provider: { '@id': BUSINESS_ID },
     itemListElement: services.map((service, i) => ({
       '@type': 'Offer',
@@ -89,9 +104,10 @@ const jsonLd = [
 ---
 
 <BaseLayout
-  title={config.seo.title}
-  description={config.seo.description}
+  title={title}
+  description={description}
   brandSuffix={false}
+  lang={lang}
   jsonLd={jsonLd}
 >
   {/* §00 — Hero */}
@@ -106,14 +122,14 @@ const jsonLd = [
     >
       <div>
         <Reveal delay={0}>
-          <StatusBadge />
+          <StatusBadge lang={lang} />
         </Reveal>
         <Reveal delay={80}>
           <h1
             class="mt-6 font-display text-[2.6rem] font-semibold leading-[0.98] tracking-tight text-ink sm:text-6xl"
           >
-            Software engineering, <span class="relative whitespace-nowrap text-accent"
-              >actually shipped<svg
+            {s.home.heroLead} <span class="relative whitespace-nowrap text-accent"
+              >{s.home.heroAccent}<svg
                 class="absolute -bottom-1 left-0 w-full"
                 height="8"
                 viewBox="0 0 300 8"
@@ -125,24 +141,20 @@ const jsonLd = [
                   stroke="currentColor"
                   stroke-width="2.5"
                   stroke-linecap="round"></path>
-              </svg></span
-            >.
+              </svg></span>.
           </h1>
         </Reveal>
         <Reveal delay={160}>
-          <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted">
-            I’m a freelance engineer and fractional CTO. I’ve founded and led the engineering —
-            web, backend, and React Native mobile — behind security-tech and marketplace
-            products across the EU, the UAE, and Turkey, and I leave teams with systems they
-            can run without me.
-          </p>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-muted">{s.home.heroBody}</p>
         </Reveal>
         <Reveal delay={240}>
           <div class="mt-8 flex flex-wrap items-center gap-3">
-            <Button href="/contact" size="lg">
-              Start a project <ArrowRight class="size-4" />
+            <Button href={localizePath('/contact', lang)} size="lg">
+              {s.home.startProject} <ArrowRight class="size-4" />
             </Button>
-            <Button href="/work" variant="outline" size="lg">See the work</Button>
+            <Button href={localizePath('/work', lang)} variant="outline" size="lg">
+              {s.home.seeWork}
+            </Button>
           </div>
         </Reveal>
       </div>
@@ -153,7 +165,7 @@ const jsonLd = [
           class="rounded-[var(--radius-card)] border border-line bg-surface shadow-[0_1px_0_rgba(20,23,28,0.04),0_18px_40px_-24px_rgba(20,23,28,0.25)]"
         >
           <div class="flex items-center justify-between border-b border-line px-5 py-3">
-            <span class="mono-label">datasheet · {site.brand}</span>
+            <span class="mono-label">{s.common.datasheet} · {site.brand}</span>
             <span class="font-mono text-[0.7rem] text-accent">rev. 2026.3</span>
           </div>
           <dl class="divide-y divide-line">
@@ -169,7 +181,7 @@ const jsonLd = [
           <div
             class="flex items-center justify-between border-t border-line bg-surface-2/40 px-5 py-3"
           >
-            <span class="mono-label">availability</span>
+            <span class="mono-label">{s.common.availability}</span>
             <span class="font-mono text-[0.7rem] font-medium text-ink">{site.availability}</span>
           </div>
         </div>
@@ -180,11 +192,11 @@ const jsonLd = [
   {/* §01 — Services */}
   <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
     <Reveal>
-      <SectionEyebrow mark="§01">What I do</SectionEyebrow>
+      <SectionEyebrow mark="§01">{s.home.servicesEyebrow}</SectionEyebrow>
       <h2
         class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
       >
-        From architecture to mobile — the ways I help teams ship.
+        {s.home.servicesTitle}
       </h2>
     </Reveal>
     <div
@@ -217,18 +229,18 @@ const jsonLd = [
       <Reveal>
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <SectionEyebrow mark="§02">Selected work</SectionEyebrow>
+            <SectionEyebrow mark="§02">{s.home.workEyebrow}</SectionEyebrow>
             <h2
               class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
             >
-              Systems built to hold up under real traffic.
+              {s.home.workTitle}
             </h2>
           </div>
           <a
-            href="/work"
+            href={localizePath("/work", lang)}
             class="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
           >
-            All work <ArrowUpRight class="size-4" />
+            {s.common.allWork} <ArrowUpRight class="size-4" />
           </a>
         </div>
       </Reveal>
@@ -238,7 +250,7 @@ const jsonLd = [
           featured.map((project, i) => (
             <Reveal delay={i * 60}>
               <a
-                href={`/work/${project.slug}`}
+                href={localizePath(`/work/${project.slug}`, lang)}
                 class="group grid gap-4 py-7 transition-colors hover:bg-surface-2/50 sm:grid-cols-[14rem_1fr_auto] sm:items-center sm:gap-8"
               >
                 <div class="flex items-baseline gap-4 sm:flex-col sm:items-start sm:gap-1.5">
@@ -263,16 +275,12 @@ const jsonLd = [
   <section class="mx-auto max-w-6xl px-5 py-20 sm:px-8">
     <div class="grid gap-12 lg:grid-cols-[1fr_1fr]">
       <Reveal>
-        <SectionEyebrow mark="§03">About</SectionEyebrow>
+        <SectionEyebrow mark="§03">{s.home.aboutEyebrow}</SectionEyebrow>
         <h2 class="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-          A senior engineer you can hand the hard part to.
+          {s.home.aboutTitle}
         </h2>
-        <p class="mt-5 max-w-lg leading-relaxed text-muted">
-          I’ve been the first engineer at seed-stage startups and the person brought in to
-          steady systems at scale. I care about the unglamorous things — clear boundaries,
-          honest observability, and code the next person can read.
-        </p>
-        <Button href="/about" variant="outline" class="mt-7">More about me</Button>
+        <p class="mt-5 max-w-lg leading-relaxed text-muted">{s.home.aboutBody}</p>
+        <Button href={localizePath("/about", lang)} variant="outline" class="mt-7">{s.home.aboutCta}</Button>
         <div class="mt-9 flex flex-wrap gap-2">
           {stack.map((tech) => <Badge>{tech}</Badge>)}
         </div>
@@ -301,16 +309,16 @@ const jsonLd = [
       <Reveal>
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <SectionEyebrow mark="§04">Writing</SectionEyebrow>
+            <SectionEyebrow mark="§04">{s.home.writingEyebrow}</SectionEyebrow>
             <h2 class="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-              Notes from the work.
+              {s.home.writingTitle}
             </h2>
           </div>
           <a
-            href="/blog"
+            href={localizePath("/blog", lang)}
             class="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
           >
-            All writing <ArrowUpRight class="size-4" />
+            {s.common.allWriting} <ArrowUpRight class="size-4" />
           </a>
         </div>
       </Reveal>
@@ -320,7 +328,7 @@ const jsonLd = [
           latest.map((post, i) => (
             <Reveal delay={i * 80}>
               <a
-                href={`/blog/${post.id}`}
+                href={postPath(post)}
                 class="group flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-surface p-7 transition-colors hover:border-line-strong hover:bg-surface-2"
               >
                 <div class="flex items-center gap-3">
@@ -335,7 +343,7 @@ const jsonLd = [
                 </h3>
                 <p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{post.data.excerpt}</p>
                 <span class="mt-5 inline-flex items-center gap-1 text-sm font-medium text-ink">
-                  Read{' '}
+                  {s.common.readMore}{' '}
                   <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />
                 </span>
               </a>
@@ -352,22 +360,19 @@ const jsonLd = [
       <Reveal>
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <SectionEyebrow mark="§05">Hiring</SectionEyebrow>
+            <SectionEyebrow mark="§05">{s.home.hiringEyebrow}</SectionEyebrow>
             <h2
               class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
             >
-              I also recruit senior tech talent — globally.
+              {s.home.hiringTitle}
             </h2>
-            <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">
-              Beyond building, I run searches for hard-to-find engineers and architects
-              worldwide. Currently open:
-            </p>
+            <p class="mt-4 max-w-xl text-sm leading-relaxed text-muted">{s.home.hiringBody}</p>
           </div>
           <a
-            href="/hiring"
+            href={localizePath("/hiring", lang)}
             class="inline-flex items-center gap-1 text-sm font-medium text-ink hover:text-accent"
           >
-            All roles <ArrowUpRight class="size-4" />
+            {s.common.allRoles} <ArrowUpRight class="size-4" />
           </a>
         </div>
       </Reveal>
@@ -377,7 +382,7 @@ const jsonLd = [
           roles.map((role, i) => (
             <Reveal delay={i * 60}>
               <a
-                href={`/hiring/${role.slug}`}
+                href={localizePath(`/hiring/${role.slug}`, lang)}
                 class="group flex items-center justify-between gap-6 py-6 transition-colors hover:bg-surface-2/40"
               >
                 <div class="flex items-baseline gap-4">
@@ -398,7 +403,7 @@ const jsonLd = [
     </div>
   </section>
 
-  <Testimonials />
+  <Testimonials lang={lang} />
 
-  <CTABand />
+  <CTABand lang={lang} />
 </BaseLayout>

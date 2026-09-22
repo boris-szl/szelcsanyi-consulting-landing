@@ -8,19 +8,25 @@ import Badge from '@/components/ui/Badge.astro'
 import SectionEyebrow from '@/components/SectionEyebrow.astro'
 import { abs, breadcrumbs, formatDate, isoDate, WEBSITE_ID } from '@/lib/meta'
 import { collectTags, tagSlug, TAG_INDEX_THRESHOLD } from '@/lib/tags'
+import { postPath } from '@/lib/posts'
+import { LOCALES, langParam, localizePath, t } from '@/i18n'
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft)
-  const byTag = collectTags(posts)
-  return [...byTag.entries()].map(([tag, tagged]) => ({
-    params: { tag: tagSlug(tag) },
-    props: { tag, posts: tagged },
-  }))
+  const all = await getCollection('blog', ({ data }) => !data.draft)
+  return LOCALES.flatMap((locale) => {
+    const byTag = collectTags(all, locale)
+    return [...byTag.entries()].map(([tag, tagged]) => ({
+      params: { lang: locale === 'en' ? undefined : locale, tag: tagSlug(tag) },
+      props: { tag, posts: tagged },
+    }))
+  })
 }
 
 type Props = { tag: string; posts: CollectionEntry<'blog'>[] }
 
 const { tag, posts }: Props = Astro.props
+const lang = langParam(Astro.params.lang)
+const strings = t(lang)
 
 /*
   A single-post archive is a thin duplicate of the post it links to, so it is
@@ -28,21 +34,35 @@ const { tag, posts }: Props = Astro.props
 */
 const thin = posts.length < TAG_INDEX_THRESHOLD
 
-const count = `${posts.length} post${posts.length === 1 ? '' : 's'}`
-const title = `${tag} — writing`
+const count =
+  lang === 'de'
+    ? `${posts.length} ${posts.length === 1 ? 'Beitrag' : 'Beiträge'}`
+    : `${posts.length} post${posts.length === 1 ? '' : 's'}`
+const title = `${tag} — ${strings.nav.blog}`
 
 /*
   The description has to land inside 120-160 for every tag, and tag names vary
   from "NIS2" to "Incident Response". Pick the longest suffix that still fits
   rather than hard-coding one sentence that overruns for the long names.
 */
-const lead = `${count} tagged ${tag} by Boris Szelcsányi — freelance software engineer and fractional CTO.`
+const lead =
+  lang === 'de'
+    ? `${count} zum Thema ${tag} von Boris Szelcsányi — freiberuflicher Softwareentwickler und Fractional CTO.`
+    : `${count} tagged ${tag} by Boris Szelcsányi — freelance software engineer and fractional CTO.`
+const tails =
+  lang === 'de'
+    ? [
+        ' Notizen aus der Praxis zu Systemen, die im Betrieb standhalten müssen.',
+        ' Notizen aus der Praxis zum Bauen und Betreiben echter Systeme.',
+        ' Notizen aus der Arbeit.',
+      ]
+    : [
+        ' Field notes on building and running systems that hold up in production.',
+        ' Field notes from building and running real systems.',
+        ' Field notes from the work.',
+      ]
 const description =
-  [
-    ' Field notes on building and running systems that hold up in production.',
-    ' Field notes from building and running real systems.',
-    ' Field notes from the work.',
-  ]
+  tails
     .map((tail) => lead + tail)
     .find((candidate) => candidate.length <= 160) ?? lead
 
@@ -51,38 +71,38 @@ const jsonLd = thin
   : [
       {
         '@type': 'CollectionPage',
-        '@id': `${abs(`/blog/tag/${tagSlug(tag)}`)}#page`,
-        url: abs(`/blog/tag/${tagSlug(tag)}`),
-        name: `${tag} — writing`,
+        '@id': `${abs(localizePath(`/blog/tag/${tagSlug(tag)}`, lang))}#page`,
+        url: abs(localizePath(`/blog/tag/${tagSlug(tag)}`, lang)),
+        name: title,
         description,
         isPartOf: { '@id': WEBSITE_ID },
-        inLanguage: 'en',
+        inLanguage: lang,
         mainEntity: {
           '@type': 'ItemList',
           itemListElement: posts.map((post, i) => ({
             '@type': 'ListItem',
             position: i + 1,
-            url: abs(`/blog/${post.id}`),
+            url: abs(postPath(post)),
             name: post.data.title,
           })),
         },
       },
       breadcrumbs([
-        { name: 'Writing', path: '/blog' },
-        { name: tag, path: `/blog/tag/${tagSlug(tag)}` },
+        { name: strings.nav.blog, path: localizePath('/blog', lang) },
+        { name: tag, path: localizePath(`/blog/tag/${tagSlug(tag)}`, lang) },
       ]),
     ]
 ---
 
-<BaseLayout title={title} description={description} noindex={thin} jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} lang={lang} noindex={thin} jsonLd={jsonLd}>
   <section class="border-b border-line">
     <div class="mx-auto max-w-4xl px-5 py-16 sm:px-8 lg:py-20">
       <Reveal>
         <a
-          href="/blog"
+          href={localizePath("/blog", lang)}
           class="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
         >
-          <ArrowLeft class="size-4" /> All writing
+          <ArrowLeft class="size-4" /> {strings.common.allWriting}
         </a>
         <div class="mt-8">
           <SectionEyebrow mark="§ TAG">{count}</SectionEyebrow>
@@ -102,7 +122,7 @@ const jsonLd = thin
         posts.map((post, i) => (
           <Reveal delay={i * 60}>
             <a
-              href={`/blog/${post.id}`}
+              href={postPath(post)}
               class="group grid gap-3 border-b border-line py-8 transition-colors hover:bg-surface sm:grid-cols-[9rem_1fr] sm:gap-8"
             >
               <div class="flex flex-col gap-1">
@@ -121,7 +141,7 @@ const jsonLd = thin
                     <Badge variant={other === tag ? 'accent' : 'default'}>{other}</Badge>
                   ))}
                   <span class="ml-auto hidden items-center gap-1 text-sm font-medium text-ink sm:inline-flex">
-                    Read
+                    {strings.common.readMore}
                     <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />
                   </span>
                 </div>
@@ -133,5 +153,5 @@ const jsonLd = thin
     </div>
   </section>
 
-  <CTABand />
+  <CTABand lang={lang} />
 </BaseLayout>

@@ -60,7 +60,7 @@ export const config = {
     siteUrl: 'https://szelcsanyi.net',
     title: 'szelcsanyi consulting — Software engineering, shipped',
     description:
-      'Boris Szelcsányi — freelance software engineer and fractional CTO. I found and lead the engineering behind security-tech and marketplace products across the EU, UAE, and Turkey.',
+      'Boris Szelcsányi — freelance software engineer and fractional CTO. I lead the engineering behind security-tech and marketplace products across the EU, UAE and Turkey.',
   },
 } as const
 

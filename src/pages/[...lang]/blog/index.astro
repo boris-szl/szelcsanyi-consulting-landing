@@ -1,5 +1,4 @@
 ---
-import { getCollection } from 'astro:content'
 import { ArrowRight } from '@lucide/astro'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHeader from '@/components/PageHeader.astro'
@@ -7,70 +6,61 @@ import Reveal from '@/components/Reveal.astro'
 import CTABand from '@/components/CTABand.astro'
 import Badge from '@/components/ui/Badge.astro'
 import { config } from '@/config'
+import { postsIn, postPath } from '@/lib/posts'
+import { localePaths, langParam, localizePath, t } from '@/i18n'
+
+export function getStaticPaths() {
+  return localePaths()
+}
+
+const lang = langParam(Astro.params.lang)
+const s = t(lang)
 import { abs, breadcrumbs, formatDate, isoDate, PERSON_ID, BUSINESS_ID } from '@/lib/meta'
 
-const all = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
-)
+const all = await postsIn(lang)
 
 /*
-  One row per article, not per translation. Posts sharing a translationKey are
-  the same piece of writing, so list the English one (this page is lang="en")
-  and link the other language from that row. Without this the index showed the
-  same article twice, which also reads to a crawler as near-duplicate content.
+  The list is already one row per article: posts are filtered by locale, and a
+  translation lives in the other locale's tree. The earlier dedup pass is gone
+  because there is nothing left to dedupe.
 */
-const translationsOf = (post: (typeof all)[number]) =>
-  post.data.translationKey
-    ? all.filter(
-        (other) => other.id !== post.id && other.data.translationKey === post.data.translationKey,
-      )
-    : []
-
-const seen = new Set<string>()
-const posts = all.filter((post) => {
-  const key = post.data.translationKey
-  if (!key) return true
-  // Prefer the English version as the canonical row for this article.
-  if (post.data.lang !== 'en' && all.some((o) => o.data.translationKey === key && o.data.lang === 'en'))
-    return false
-  if (seen.has(key)) return false
-  seen.add(key)
-  return true
-})
+const posts = all
 
 const description =
-  'Field notes on building dependable systems, React Native, reading slow queries, and consulting that leaves a team stronger.'
+  lang === 'de'
+    ? 'Notizen aus der Praxis: verlässliche Systeme bauen, langsame Queries lesen und beraten, sodass ein Team danach stärker dasteht.'
+    : 'Field notes on building dependable systems, React Native, reading slow queries, and consulting that leaves a team stronger.'
 
 const jsonLd = [
   {
     '@type': 'Blog',
-    '@id': `${abs('/blog')}#blog`,
-    url: abs('/blog'),
-    name: `Writing — ${config.brandFull}`,
+    '@id': `${abs(localizePath('/blog', lang))}#blog`,
+    url: abs(localizePath('/blog', lang)),
+    name: `${s.nav.blog} — ${config.brandFull}`,
     description,
-    inLanguage: 'en',
+    inLanguage: lang,
     publisher: { '@id': BUSINESS_ID },
     blogPost: posts.map((post) => ({
       '@type': 'BlogPosting',
-      '@id': `${abs(`/blog/${post.id}`)}#article`,
+      '@id': `${abs(postPath(post))}#article`,
       headline: post.data.title,
-      url: abs(`/blog/${post.id}`),
+      url: abs(postPath(post)),
       datePublished: isoDate(post.data.date),
       description: post.data.excerpt,
       keywords: post.data.tags,
       author: { '@id': PERSON_ID },
     })),
   },
-  breadcrumbs([{ name: 'Writing', path: '/blog' }]),
+  breadcrumbs([{ name: s.nav.blog, path: localizePath('/blog', lang) }]),
 ]
 ---
 
-<BaseLayout title="Writing" description={description} jsonLd={jsonLd}>
+<BaseLayout title={s.nav.blog} description={description} lang={lang} jsonLd={jsonLd}>
   <PageHeader
     eyebrowRef="§ WRITING"
-    eyebrow="Writing"
-    title="Notes from the work."
-    intro="Field notes on building dependable systems, reading slow queries, and doing consulting that actually leaves a team stronger."
+    eyebrow={s.blog.eyebrow}
+    title={s.blog.title}
+    intro={s.blog.intro}
   />
 
   <section class="mx-auto max-w-4xl px-5 py-14 sm:px-8">
@@ -79,7 +69,7 @@ const jsonLd = [
         posts.map((post, i) => (
           <Reveal delay={i * 60}>
             <a
-              href={`/blog/${post.id}`}
+              href={postPath(post)}
               class="group grid gap-3 border-b border-line py-8 transition-colors hover:bg-surface sm:grid-cols-[9rem_1fr] sm:gap-8"
             >
               <div class="flex flex-col gap-1">
@@ -99,20 +89,11 @@ const jsonLd = [
                   ))}
                   {post.data.sources.length > 0 && (
                     <Badge variant="plain">
-                      {post.data.sources.length} sources
+                      {post.data.sources.length} {s.blog.sourcesCount}
                     </Badge>
                   )}
-                  {/* The index is an English page; flag anything that is not. */}
-                  {post.data.lang !== 'en' && (
-                    <Badge variant="solid">{post.data.lang.toUpperCase()}</Badge>
-                  )}
-                  {translationsOf(post).map((other) => (
-                    <Badge variant="solid">
-                      {other.data.lang === 'de' ? 'Auch auf Deutsch' : other.data.lang.toUpperCase()}
-                    </Badge>
-                  ))}
                   <span class="ml-auto hidden items-center gap-1 text-sm font-medium text-ink sm:inline-flex">
-                    Read
+                    {s.common.readMore}
                     <ArrowRight class="size-4 transition-transform group-hover:translate-x-0.5" />
                   </span>
                 </div>
@@ -124,5 +105,5 @@ const jsonLd = [
     </div>
   </section>
 
-  <CTABand />
+  <CTABand lang={lang} />
 </BaseLayout>

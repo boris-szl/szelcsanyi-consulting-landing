@@ -5,18 +5,30 @@ import PageHeader from '@/components/PageHeader.astro'
 import Reveal from '@/components/Reveal.astro'
 import CTABand from '@/components/CTABand.astro'
 import Badge from '@/components/ui/Badge.astro'
-import { projects } from '@/lib/content'
+import { localizedProjects } from '@/lib/localized'
 import { abs, breadcrumbs, WEBSITE_ID } from '@/lib/meta'
+import { localePaths, langParam, localizePath, t } from '@/i18n'
+
+export function getStaticPaths() {
+  return localePaths()
+}
+
+const lang = langParam(Astro.params.lang)
+const s = t(lang)
+const projects = localizedProjects(lang)
 
 const description =
-  'Ventures I’ve founded, led, and advised across security-tech, marketplaces, and edtech — OnDuty, Nisura, BookSecurity, Yükbul, and more.'
+  lang === 'de'
+    ? 'Unternehmungen, die ich gegründet, geleitet und beraten habe — in Security-Tech, Marktplätzen und EdTech: OnDuty, Nisura, BookSecurity, Yükbul und mehr.'
+    : 'Ventures I’ve founded, led, and advised across security-tech, marketplaces, and edtech — OnDuty, Nisura, BookSecurity, Yükbul, and more.'
 
 const jsonLd = [
   {
     '@type': 'CollectionPage',
-    '@id': `${abs('/work')}#page`,
-    url: abs('/work'),
-    name: 'Work',
+    '@id': `${abs(localizePath('/work', lang))}#page`,
+    url: abs(localizePath('/work', lang)),
+    name: s.nav.work,
+    inLanguage: lang,
     description,
     isPartOf: { '@id': WEBSITE_ID },
     mainEntity: {
@@ -24,21 +36,21 @@ const jsonLd = [
       itemListElement: projects.map((project, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        url: abs(`/work/${project.slug}`),
+        url: abs(localizePath(`/work/${project.slug}`, lang)),
         name: project.name,
       })),
     },
   },
-  breadcrumbs([{ name: 'Work', path: '/work' }]),
+  breadcrumbs([{ name: s.nav.work, path: localizePath('/work', lang) }]),
 ]
 ---
 
-<BaseLayout title="Work" description={description} jsonLd={jsonLd}>
+<BaseLayout title={s.nav.work} description={description} lang={lang} jsonLd={jsonLd}>
   <PageHeader
     eyebrowRef="§ WORK"
-    eyebrow="Portfolio"
-    title="The products I’ve founded, led, and advised."
-    intro="Real ventures across security-tech, marketplaces, and edtech — in the EU, the UAE, and Turkey. Some I run as CTO; others I steer as an advisor."
+    eyebrow={s.work.eyebrow}
+    title={s.work.title}
+    intro={s.work.intro}
   />
 
   <section class="mx-auto max-w-6xl px-5 py-16 sm:px-8">
@@ -47,13 +59,13 @@ const jsonLd = [
         projects.map((project, i) => (
           <Reveal delay={(i % 2) * 80}>
             <a
-              href={`/work/${project.slug}`}
+              href={localizePath(`/work/${project.slug}`, lang)}
               class="group flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-surface p-7 transition-colors hover:border-line-strong"
             >
               <div class="flex items-center justify-between">
                 <span class="mono-label text-accent">{project.ref}</span>
                 <Badge variant={project.status === 'Advisory' ? 'default' : 'accent'}>
-                  {project.status}
+                  {project.statusLabel}
                 </Badge>
               </div>
 
@@ -75,7 +87,7 @@ const jsonLd = [
               </div>
 
               <span class="mt-6 inline-flex items-center gap-1 text-sm font-medium text-ink">
-                Read the case
+                {s.common.readCase}
                 <ArrowUpRight class="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </span>
             </a>
@@ -85,5 +97,5 @@ const jsonLd = [
     </div>
   </section>
 
-  <CTABand />
+  <CTABand lang={lang} />
 </BaseLayout>

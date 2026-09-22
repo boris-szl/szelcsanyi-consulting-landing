@@ -23,14 +23,14 @@ export function tagSlug(tag: string): string {
 type Post = CollectionEntry<'blog'>
 
 /**
- * Tags drawn from English posts only. A German translation carries translated
- * tags ("Forensik" for "Forensics"), and generating an English archive for
- * those produces either an empty page or a near-duplicate of its sibling.
+ * Tags for one locale. A German translation carries translated tags
+ * ("Forensik" for "Forensics"), so each language gets its own archives rather
+ * than one archive mixing both.
  */
-export function collectTags(posts: Post[]): Map<string, Post[]> {
+export function collectTags(posts: Post[], lang: 'en' | 'de' = 'en'): Map<string, Post[]> {
   const byTag = new Map<string, Post[]>()
   for (const post of posts) {
-    if (post.data.lang !== 'en') continue
+    if (post.data.lang !== lang) continue
     for (const tag of post.data.tags) {
       const list = byTag.get(tag) ?? []
       list.push(post)

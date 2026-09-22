@@ -1,0 +1,211 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHeader from '@/components/PageHeader.astro'
+import SectionEyebrow from '@/components/SectionEyebrow.astro'
+import Reveal from '@/components/Reveal.astro'
+import CTABand from '@/components/CTABand.astro'
+import Button from '@/components/ui/Button.astro'
+import Badge from '@/components/ui/Badge.astro'
+import { stack } from '@/lib/content'
+import { localizedStats } from '@/lib/localized'
+import { site } from '@/lib/site'
+import { abs, breadcrumbs, PERSON_ID, WEBSITE_ID } from '@/lib/meta'
+import { about } from '@/i18n/about'
+import { localePaths, langParam, localizePath, t } from '@/i18n'
+
+export function getStaticPaths() {
+  return localePaths()
+}
+
+const lang = langParam(Astro.params.lang)
+const s = t(lang)
+const content = about[lang]
+const stats = localizedStats(lang)
+
+const { principles, timeline, education } = content
+const bio = content.bio.map((paragraph) => paragraph.replace('{years}', String(site.years)))
+
+const description =
+  lang === 'de'
+    ? 'Boris Szelcsányi — freiberuflicher Softwareentwickler und Fractional CTO in Wien und St. Gallen. Gründer-CTO von OnDuty und Nisura.'
+    : 'Boris Szelcsányi — freelance software engineer and fractional CTO in Vienna and St. Gallen. Founder-CTO of OnDuty and Nisura; backend and mobile.'
+
+const url = abs(localizePath('/about', lang))
+const jsonLd = [
+  {
+    '@type': 'AboutPage',
+    '@id': `${url}#page`,
+    url,
+    name: s.about.eyebrow,
+    description,
+    inLanguage: lang,
+    isPartOf: { '@id': WEBSITE_ID },
+    mainEntity: { '@id': PERSON_ID },
+  },
+  /* The track record as data — an answer engine asking "what has he worked
+     on?" should not have to parse the timeline out of prose. */
+  {
+    '@type': 'ItemList',
+    '@id': `${url}#timeline`,
+    name: s.about.pathEyebrow,
+    itemListElement: timeline.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'OrganizationRole',
+        roleName: item.role,
+        description: item.note,
+        memberOf: { '@type': 'Organization', name: item.org },
+      },
+    })),
+  },
+  breadcrumbs([{ name: s.about.eyebrow, path: localizePath('/about', lang) }]),
+]
+---
+
+<BaseLayout
+  title={s.about.eyebrow}
+  description={description}
+  ogType="profile"
+  image="/portrait.png"
+  lang={lang}
+  jsonLd={jsonLd}
+>
+  <PageHeader
+    eyebrowRef="§ ABOUT"
+    eyebrow={s.about.eyebrow}
+    title={s.about.title}
+    intro={content.intro(site.years, s.common.location)}
+  />
+
+  <section class="mx-auto max-w-6xl px-5 py-16 sm:px-8">
+    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
+      <Reveal>
+        <div class="prose-datasheet max-w-none">
+          {bio.map((paragraph) => <p set:html={paragraph} />)}
+        </div>
+
+        <div class="mt-9">
+          <p class="mono-label">{s.about.tools}</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {stack.map((tech) => <Badge>{tech}</Badge>)}
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal delay={120} class="flex flex-col gap-6">
+        <figure class="overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface">
+          <img
+            src="/portrait.png"
+            alt={`${s.about.portraitAlt} ${site.owner}`}
+            width="643"
+            height="857"
+            class="aspect-[4/5] w-full object-cover object-top"
+          />
+          <figcaption class="flex items-center justify-between border-t border-line px-4 py-3">
+            <span class="mono-label text-accent">{content.caption}</span>
+            <span class="mono-label">{s.common.location}</span>
+          </figcaption>
+        </figure>
+
+        <dl
+          class="grid grid-cols-2 gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line"
+        >
+          {
+            stats.map((stat) => (
+              <div class="bg-surface p-6">
+                <dt class="font-display text-3xl font-semibold text-ink">{stat.value}</dt>
+                <dd class="mt-1 text-sm text-muted">{stat.label}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </Reveal>
+    </div>
+  </section>
+
+  {/* Principles */}
+  <section class="border-y border-line bg-surface">
+    <div class="mx-auto max-w-6xl px-5 py-16 sm:px-8">
+      <Reveal>
+        <SectionEyebrow mark="§ HOW">{s.about.howEyebrow}</SectionEyebrow>
+        <h2
+          class="mt-5 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl"
+        >
+          {s.about.howTitle}
+        </h2>
+      </Reveal>
+      <div
+        class="mt-12 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line sm:grid-cols-2"
+      >
+        {
+          principles.map((principle, i) => (
+            <Reveal delay={i * 60}>
+              <div class="h-full bg-surface p-7">
+                <span class="mono-label text-accent">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="mt-4 text-xl text-ink">{principle.title}</h3>
+                <p class="mt-3 text-sm leading-relaxed text-muted">{principle.body}</p>
+              </div>
+            </Reveal>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/* Timeline */}
+  <section class="mx-auto max-w-6xl px-5 py-16 sm:px-8">
+    <Reveal>
+      <SectionEyebrow mark="§ PATH">{s.about.pathEyebrow}</SectionEyebrow>
+      <h2 class="mt-5 font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+        {s.about.pathTitle}
+      </h2>
+    </Reveal>
+    <div class="mt-10 border-t border-line">
+      {
+        timeline.map((item, i) => (
+          <Reveal delay={i * 60}>
+            <div class="grid gap-2 border-b border-line py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
+              <span class="mono-label pt-1">{item.period}</span>
+              <div>
+                <div class="flex flex-wrap items-baseline gap-x-3">
+                  <span class="font-display text-lg font-semibold text-ink">{item.role}</span>
+                  <span class="text-sm font-medium text-accent">{item.org}</span>
+                </div>
+                <p class="mt-1 text-sm leading-relaxed text-muted">{item.note}</p>
+              </div>
+            </div>
+          </Reveal>
+        ))
+      }
+    </div>
+
+    <Reveal class="mt-14">
+      <SectionEyebrow mark="§ EDU">{s.about.eduEyebrow}</SectionEyebrow>
+    </Reveal>
+    <div class="mt-8 border-t border-line">
+      {
+        education.map((item, i) => (
+          <Reveal delay={i * 60}>
+            <div class="grid gap-2 border-b border-line py-6 sm:grid-cols-[10rem_1fr] sm:gap-8">
+              <span class="mono-label pt-1">{item.period}</span>
+              <div>
+                <div class="flex flex-wrap items-baseline gap-x-3">
+                  <span class="font-display text-lg font-semibold text-ink">{item.degree}</span>
+                  <span class="text-sm font-medium text-accent">{item.org}</span>
+                </div>
+                <p class="mt-1 text-sm leading-relaxed text-muted">{item.note}</p>
+              </div>
+            </div>
+          </Reveal>
+        ))
+      }
+    </div>
+
+    <Reveal class="mt-12">
+      <Button href={localizePath("/contact", lang)} size="lg">{s.about.workWithMe}</Button>
+    </Reveal>
+  </section>
+
+  <CTABand lang={lang} />
+</BaseLayout>

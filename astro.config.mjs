@@ -51,6 +51,18 @@ export default defineConfig({
   // Absolute URLs for canonicals, Open Graph, the sitemap, and the RSS feed
   // all derive from this.
   site: 'https://szelcsanyi.net',
+
+  /*
+    English lives at the root and German under /de. `prefixDefaultLocale:
+    false` keeps every existing English URL exactly where it was — this was
+    retrofitted onto a live site, and moving /about to /en/about would have
+    thrown away its history for nothing.
+  */
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'de'],
+    routing: { prefixDefaultLocale: false },
+  },
   trailingSlash: 'never',
   /*
     Directory output (blog/post/index.html) rather than flat .html files: it
@@ -66,6 +78,15 @@ export default defineConfig({
     gzip, so keep the output verbatim.
   */
   compressHTML: false,
+
+  /*
+    The German post used to live at /blog/<slug>-de, before /de existed. It
+    moved to /de/blog/<slug> for symmetry with the English URL; this keeps the
+    published link working.
+  */
+  redirects: {
+    '/blog/wordpress-zero-day-post-mortem-de': '/de/blog/wordpress-zero-day-post-mortem',
+  },
 
   integrations: [
     react(),

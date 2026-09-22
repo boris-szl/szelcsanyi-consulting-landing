@@ -1,8 +1,26 @@
 ---
 import { ArrowUpRight } from '@lucide/astro'
-import { nav, site } from '@/lib/site'
+import { site } from '@/lib/site'
 import StatusBadge from '@/components/StatusBadge.astro'
 import Wordmark from '@/components/Wordmark.astro'
+import LanguageSwitcher from '@/components/LanguageSwitcher.astro'
+import { localizePath, t, type Locale } from '@/i18n'
+
+interface Props {
+  lang: Locale
+  path: string
+}
+
+const { lang, path } = Astro.props
+const strings = t(lang)
+const nav = [
+  { label: strings.nav.work, to: '/work' },
+  { label: strings.nav.about, to: '/about' },
+  { label: strings.nav.hiring, to: '/hiring' },
+  { label: strings.nav.blog, to: '/blog' },
+  { label: strings.nav.contact, to: '/contact' },
+]
+const href = (to: string) => localizePath(to, lang)
 
 const year = new Date().getFullYear()
 ---
@@ -13,20 +31,24 @@ const year = new Date().getFullYear()
       <div>
         <Wordmark class="text-xl" />
         <p class="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-          {site.tagline} Remote-first from {site.location}, working across {site.timezone}.
+          {strings.common.footerTagline}{' '}
+          {strings.common.footerRemote
+            .replace('{location}', strings.common.location)
+            .replace('{timezone}', site.timezone)}
         </p>
-        <div class="mt-5">
-          <StatusBadge />
+        <div class="mt-5 flex flex-wrap items-center gap-4">
+          <StatusBadge lang={lang} />
+          <LanguageSwitcher lang={lang} path={path} />
         </div>
       </div>
 
       <div>
-        <p class="mono-label">Sitemap</p>
+        <p class="mono-label">{strings.common.sitemap}</p>
         <ul class="mt-4 flex flex-col gap-2.5">
           {
             nav.map((item) => (
               <li>
-                <a href={item.to} class="text-sm text-muted transition-colors hover:text-ink">
+                <a href={href(item.to)} class="text-sm text-muted transition-colors hover:text-ink">
                   {item.label}
                 </a>
               </li>
@@ -34,14 +56,14 @@ const year = new Date().getFullYear()
           }
           <li>
             <a href="/rss.xml" class="inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-ink">
-              RSS feed
+              {strings.common.rssFeed}
             </a>
           </li>
         </ul>
       </div>
 
       <div>
-        <p class="mono-label">Direct</p>
+        <p class="mono-label">{strings.common.direct}</p>
         <ul class="mt-4 flex flex-col gap-2.5">
           <li>
             <a
@@ -78,7 +100,7 @@ const year = new Date().getFullYear()
         © {year} {site.brandFull} · {site.owner}
       </p>
       <p class="font-mono text-[0.7rem] uppercase tracking-wide text-muted">
-        {site.location} · {site.timezone}
+        {strings.common.location} · {site.timezone}
       </p>
     </div>
   </div>

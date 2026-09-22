@@ -54,6 +54,35 @@ src/
 src/config.ts        Single source of truth: name, email, address, SEO defaults
 ```
 
+## Languages
+
+English lives at the root, German under `/de`. `prefixDefaultLocale: false`
+keeps every existing English URL where it was.
+
+One file serves both locales: pages live under `src/pages/[...lang]/` and
+`getStaticPaths` returns `{ lang: undefined }` and `{ lang: 'de' }`, so there
+is no forked page to keep in sync. All copy lives in `src/i18n/`:
+
+| File | Holds |
+| --- | --- |
+| `ui.ts` | Navigation, buttons, section headings, page prose |
+| `content.de.ts` | German for projects, services, stats |
+| `roles.de.ts` | German job ads — gender-neutral per AGG/GlBG, plus the salary notice |
+| `about.ts` | Biography, principles, timeline, education, both locales |
+
+`ui.ts` derives its type from the English object (`export type UI = typeof en`),
+so a key missing from German is a build error rather than `undefined` rendered
+into a page.
+
+Blog posts are per-file: a German post is `<slug>-de.md` with `lang: de` and a
+`translationKey` shared with its original. It renders at `/de/blog/<slug>` —
+the `-de` suffix is stripped from the URL — and the pair is linked by
+reciprocal hreflang.
+
+Two things the German build does that the English one does not: job titles
+carry `(m/w/d)`, and role pages show a collective-agreement salary notice,
+both required for job advertisements in Germany and Austria.
+
 ## SEO & GEO
 
 The site is built to be readable by search crawlers and quotable by answer engines:
@@ -67,6 +96,8 @@ The site is built to be readable by search crawlers and quotable by answer engin
 | `/rss.xml` | Full-text feed |
 | `/llms.txt`, `/llms-full.txt` | [llmstxt.org](https://llmstxt.org) index and the complete writing archive |
 | `/robots.txt` | Generated; named AI crawlers allowed explicitly |
+| hreflang | Reciprocal `en`/`de` pairs plus `x-default` on every page |
+| `/de/rss.xml`, `/de/llms.txt` | Per-locale feed and index |
 
 To opt a specific AI crawler out, remove it from `AI_CRAWLERS` in `src/pages/robots.txt.ts`.
 

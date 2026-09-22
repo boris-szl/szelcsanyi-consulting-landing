@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import satori from 'satori'
 import { Resvg } from '@resvg/resvg-js'
 import { config } from '@/config'
+import { postSlug } from '@/lib/posts'
 
 /*
   A social preview image per post, rendered at build time.
@@ -36,7 +37,13 @@ const COLORS = {
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft)
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }))
+  return posts.map((post) => ({
+    params: {
+      lang: post.data.lang === 'en' ? undefined : post.data.lang,
+      slug: postSlug(post),
+    },
+    props: { post },
+  }))
 }
 
 /** Long titles need to step down a size or they overflow the card. */

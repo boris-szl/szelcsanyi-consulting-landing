@@ -4,23 +4,28 @@ import Button from '@/components/ui/Button.astro'
 import StatusBadge from '@/components/StatusBadge.astro'
 import Reveal from '@/components/Reveal.astro'
 import { site } from '@/lib/site'
+import { localizePath, t, type Locale } from '@/i18n'
+
+interface Props {
+  lang?: Locale
+}
+
+const { lang = 'en' } = Astro.props
+const s = t(lang)
 ---
 
 <section class="relative overflow-hidden border-t border-line bg-surface">
   <div class="accent-glow pointer-events-none absolute inset-x-0 bottom-[-40%] top-[10%]"></div>
   <div class="relative mx-auto max-w-6xl px-5 py-20 sm:px-8">
     <Reveal>
-      <StatusBadge />
+      <StatusBadge lang={lang} />
       <h2 class="mt-6 max-w-2xl font-display text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
-        Have a system that needs to hold up? Let’s talk about it.
+        {s.cta.title}
       </h2>
-      <p class="mt-4 max-w-xl leading-relaxed text-muted">
-        Tell me what you’re building and where it hurts. I’ll reply within a day with an
-        honest read on whether — and how — I can help.
-      </p>
+      <p class="mt-4 max-w-xl leading-relaxed text-muted">{s.cta.body}</p>
       <div class="mt-8 flex flex-wrap items-center gap-3">
-        <Button href="/contact" size="lg">
-          Book a call <ArrowRight class="size-4" />
+        <Button href={localizePath("/contact", lang)} size="lg">
+          {s.nav.bookCall} <ArrowRight class="size-4" />
         </Button>
         <Button href={site.social.email} variant="outline" size="lg">
           {site.email}

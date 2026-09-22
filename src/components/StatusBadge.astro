@@ -2,13 +2,14 @@
 // Signature element: a build/status-badge that reads like a CI pill.
 // The pulsing dot signals "currently available".
 import { cn } from '@/lib/utils'
-import { site } from '@/lib/site'
+import { t, type Locale } from '@/i18n'
 
 interface Props {
   class?: string
+  lang?: Locale
 }
 
-const { class: className } = Astro.props
+const { class: className, lang = 'en' } = Astro.props
 ---
 
 <span
@@ -21,5 +22,5 @@ const { class: className } = Astro.props
     <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70"></span>
     <span class="relative inline-flex h-2 w-2 rounded-full bg-accent"></span>
   </span>
-  {site.availability}
+  {t(lang).common.availabilityValue}
 </span>

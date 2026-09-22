@@ -8,38 +8,56 @@ import { BookingEmbed } from '@/components/BookingEmbed'
 import { site } from '@/lib/site'
 import { config, formattedAddress } from '@/config'
 import { abs, breadcrumbs, BUSINESS_ID, WEBSITE_ID } from '@/lib/meta'
+import { localePaths, langParam, localizePath, t } from '@/i18n'
+
+export function getStaticPaths() {
+  return localePaths()
+}
+
+const lang = langParam(Astro.params.lang)
+const s = t(lang)
 
 const description =
-  'Start a project with Boris Szelcsányi — fractional CTO, backend, and React Native mobile. Based in Vienna & St. Gallen, working remote-first.'
+  lang === 'de'
+    ? 'Projekt starten mit Boris Szelcsányi — Fractional CTO, Backend und React-Native-Apps. Standort Wien & St. Gallen, Arbeitsweise remote-first.'
+    : 'Start a project with Boris Szelcsányi — fractional CTO, backend, and React Native mobile. Based in Vienna & St. Gallen, working remote-first.'
 
+const url = abs(localizePath('/contact', lang))
 const jsonLd = [
   {
     '@type': 'ContactPage',
-    '@id': `${abs('/contact')}#page`,
-    url: abs('/contact'),
-    name: 'Contact',
+    '@id': `${url}#page`,
+    url,
+    name: s.contact.title,
     description,
+    inLanguage: lang,
     isPartOf: { '@id': WEBSITE_ID },
     mainEntity: { '@id': BUSINESS_ID },
   },
   {
     '@type': 'ContactPoint',
-    '@id': `${abs('/contact')}#contactpoint`,
-    contactType: 'Sales and new engagements',
+    '@id': `${url}#contactpoint`,
+    contactType: lang === 'de' ? 'Vertrieb und neue Mandate' : 'Sales and new engagements',
     email: `mailto:${config.email}`,
     availableLanguage: ['English', 'German'],
     areaServed: ['CH', 'AT', 'DE', 'EU'],
   },
-  breadcrumbs([{ name: 'Contact', path: '/contact' }]),
+  breadcrumbs([{ name: s.nav.contact, path: localizePath('/contact', lang) }]),
+]
+
+const facts: [string, string][] = [
+  [s.contact.basedIn, `${s.common.location} · ${site.timezone}`],
+  [s.contact.registeredOffice, formattedAddress],
+  [s.contact.workingStyle, s.contact.workingStyleValue],
 ]
 ---
 
-<BaseLayout title="Contact" description={description} jsonLd={jsonLd}>
+<BaseLayout title={s.contact.title} description={description} lang={lang} jsonLd={jsonLd}>
   <PageHeader
     eyebrowRef="§ CONTACT"
-    eyebrow="Contact"
-    title="Book a call."
-    intro="Grab a slot that suits you — 30 minutes, no pitch. Come with what you’re building, where it hurts, and roughly when. You’ll leave with an honest read on whether I can help."
+    eyebrow={s.contact.eyebrow}
+    title={s.contact.title}
+    intro={s.contact.intro}
   />
 
   <section class="mx-auto max-w-6xl px-5 py-16 sm:px-8">
@@ -55,13 +73,13 @@ const jsonLd = [
             slot="fallback"
             class="flex min-h-[28rem] flex-col items-start justify-center gap-3 rounded-[var(--radius-card)] border border-line bg-surface px-6 py-16 sm:px-10"
           >
-            <span class="mono-label text-accent">Booking</span>
+            <span class="mono-label text-accent">{s.contact.booking}</span>
             <p class="max-w-md leading-relaxed text-muted">
-              Loading the scheduler. If it does not appear, email{' '}
+              {s.contact.bookingFallback}{' '}
               <a class="text-ink underline underline-offset-4" href={site.social.email}>
                 {site.email}
               </a>{' '}
-              and we will find a slot.
+              {s.contact.bookingFallbackTail}
             </p>
           </div>
         </BookingEmbed>
@@ -70,11 +88,11 @@ const jsonLd = [
       <Reveal delay={120}>
         <div class="rounded-[var(--radius-card)] border border-line bg-surface">
           <div class="border-b border-line px-6 py-4">
-            <StatusBadge />
+            <StatusBadge lang={lang} />
           </div>
           <dl class="divide-y divide-line">
             <div class="px-6 py-4">
-              <dt class="mono-label">Email</dt>
+              <dt class="mono-label">{s.contact.email}</dt>
               <dd class="mt-1">
                 <a
                   href={site.social.email}
@@ -84,22 +102,16 @@ const jsonLd = [
                 </a>
               </dd>
             </div>
+            {
+              facts.map(([label, value]) => (
+                <div class="px-6 py-4">
+                  <dt class="mono-label">{label}</dt>
+                  <dd class="mt-1 text-sm font-medium text-ink">{value}</dd>
+                </div>
+              ))
+            }
             <div class="px-6 py-4">
-              <dt class="mono-label">Based in</dt>
-              <dd class="mt-1 text-sm font-medium text-ink">
-                {site.location} · {site.timezone}
-              </dd>
-            </div>
-            <div class="px-6 py-4">
-              <dt class="mono-label">Registered office</dt>
-              <dd class="mt-1 text-sm font-medium text-ink">{formattedAddress}</dd>
-            </div>
-            <div class="px-6 py-4">
-              <dt class="mono-label">Working style</dt>
-              <dd class="mt-1 text-sm font-medium text-ink">Remote-first, across EU / UAE / TR</dd>
-            </div>
-            <div class="px-6 py-4">
-              <dt class="mono-label">Elsewhere</dt>
+              <dt class="mono-label">{s.contact.elsewhere}</dt>
               <dd class="mt-2 flex flex-col gap-2">
                 <a
                   href={site.social.linkedin}

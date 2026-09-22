@@ -9,6 +9,7 @@
 */
 import { ExternalLink } from '@lucide/astro'
 import { sourceHost } from '@/lib/meta'
+import { t } from '@/i18n'
 
 interface Props {
   sources: { title: string; url: string; publisher?: string; note?: string }[]
@@ -17,18 +18,8 @@ interface Props {
 
 const { sources, lang = 'en' } = Astro.props
 
-const copy = {
-  en: {
-    heading: 'Sources',
-    blurb:
-      'Primary references for the claims above. Standards and advisories are linked to the issuing body rather than to coverage of them.',
-  },
-  de: {
-    heading: 'Quellen',
-    blurb:
-      'Primärquellen zu den obigen Aussagen. Standards und Advisories sind auf die herausgebende Stelle verlinkt, nicht auf Berichterstattung darüber.',
-  },
-}[lang]
+/* Shares the dictionary rather than keeping a second copy of these strings. */
+const copy = { heading: t(lang).common.sources, blurb: t(lang).common.sourcesBlurb }
 ---
 
 {
