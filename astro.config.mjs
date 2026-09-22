@@ -111,6 +111,29 @@ export default defineConfig({
     react(),
     sitemap({
       changefreq: 'monthly',
+
+      /*
+        Renders the raw XML as a readable page in a browser. The file is a
+        plain XSLT in public/ — it changes nothing a crawler sees, it just
+        means the sitemap is something a person can open.
+      */
+      xslURL: '/sitemap.xsl',
+
+      /*
+        Emits <xhtml:link rel="alternate" hreflang> inside each <url>. This is
+        one of the three ways Google accepts hreflang, alongside the <link>
+        tags already in every page's head — declaring it in both places is the
+        recommended belt-and-braces for a bilingual site, and the sitemap is
+        where Google reads it for pages it has not crawled yet.
+
+        Safe here because the two trees are symmetric: every indexed English
+        URL has a German counterpart at the same path under /de.
+      */
+      i18n: {
+        defaultLocale: 'en',
+        locales: { en: 'en', de: 'de' },
+      },
+
       filter: (page) => {
         const path = new URL(page).pathname
         const slug = /\/blog\/tag\/([^/]+)\/?$/.exec(path)?.[1]
