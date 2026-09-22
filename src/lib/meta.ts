@@ -49,6 +49,9 @@ export function personNode(): Node {
       'Cyber risk quantification',
       'NIS2',
       'PostgreSQL performance',
+      'MySQL',
+      'PHP',
+      'Legacy system maintenance',
       'DevOps',
     ],
     sameAs: [config.social.github, config.social.linkedin].filter(
