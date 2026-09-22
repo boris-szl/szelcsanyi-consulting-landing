@@ -1,6 +1,8 @@
 ---
 title: How I read a slow query before touching it
 date: 2026-06-15
+lang: en
+translationKey: reading-a-slow-query
 excerpt: A repeatable way to go from "the database is slow" to a specific, measured fix — without guessing or adding indexes at random.
 tags: Postgres, Performance
 readingTime: 7 min read

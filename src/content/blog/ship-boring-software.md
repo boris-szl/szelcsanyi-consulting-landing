@@ -1,6 +1,8 @@
 ---
 title: Ship boring software on purpose
 date: 2026-07-28
+lang: en
+translationKey: ship-boring-software
 excerpt: The most reliable systems I have built were also the least clever. Here is why I reach for boring first, and when I break my own rule.
 tags: Architecture, Reliability
 readingTime: 6 min read

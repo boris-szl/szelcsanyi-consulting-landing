@@ -1,6 +1,8 @@
 ---
 title: What I do in the first 90 days of an engagement
 date: 2026-05-02
+lang: en
+translationKey: freelance-first-90-days
 excerpt: How I earn trust as an outside engineer — by shipping something small and real before I propose anything large.
 seoDescription: >-
   How I open a consulting engagement: earn context in the first two weeks, ship one real and visible piece of work by week six, then propose the larger plan.
